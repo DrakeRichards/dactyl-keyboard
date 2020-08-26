@@ -1,4 +1,6 @@
 #Configuration fragment for DSA support on the standard 62-key DMOTE.
+#Main changes are on columns 0-2. Spread out rows and columns more to fix collisions.
+#Also changed aux0 since those were colliding with each other.
 
 by-key:
   clusters:
@@ -86,4 +88,4 @@ keys:
       skirt-length: 4.6
       skirt-thickness: 4.6
 dfm:
-  error-general: 5
+  error-general: -1
