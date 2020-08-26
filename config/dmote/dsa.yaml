@@ -3,11 +3,6 @@
 by-key:
   clusters:
     main:
-      parameters:
-        layout:
-          matrix:
-            separation:
-              row: 0.3
       columns:
         "0":
           parameters:
@@ -23,6 +18,7 @@ by-key:
             layout:
               matrix:
                 separation:
+                  row: 0.3
                   column: 0.9
           rows:
             "-1":
@@ -44,6 +40,11 @@ by-key:
                   translation:
                     early: [1, 0.5, 0]
         "2":
+          parameters:
+            layout:
+              matrix:
+                separation:
+                  row: 0.3
           rows:
             "-3":
               parameters:
@@ -56,7 +57,7 @@ by-key:
               parameters:
                 layout:
                   translation:
-                    early: [0, 0, -1]
+                    early: [0, -0.5, -1]
     aux0:
       columns:
         last:
@@ -85,4 +86,4 @@ keys:
       skirt-length: 4.6
       skirt-thickness: 4.6
 dfm:
-  error-general: -1
+  error-general: 5
