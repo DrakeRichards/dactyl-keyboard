@@ -1,3 +1,5 @@
+#Configuration fragment for DSA support on the standard 62-key DMOTE.
+
 by-key:
   clusters:
     main:
