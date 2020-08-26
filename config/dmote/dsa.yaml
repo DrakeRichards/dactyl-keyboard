@@ -1,0 +1,86 @@
+by-key:
+  clusters:
+    main:
+      parameters:
+        layout:
+          matrix:
+            separation:
+              row: 0.3
+      columns:
+        "0":
+          parameters:
+            layout:
+              matrix:
+                separation:
+                  row: 0.9
+                  column: 1.3
+              yaw: 
+                base: -0.01
+        "1":
+          parameters:
+            layout:
+              matrix:
+                separation:
+                  column: 0.9
+          rows:
+            "-1":
+              parameters:
+                layout:
+                  pitch:
+                    intrinsic: -0.2
+                  translation:
+                    early: [0, -1, 2]
+            "0":
+              parameters:
+                layout:
+                  translation:
+                    early:
+                      [1, 0.5, 0]
+            "1":
+              parameters:
+                layout:
+                  translation:
+                    early: [1, 0.5, 0]
+        "2":
+          rows:
+            "-3":
+              parameters:
+                layout:
+                  pitch:
+                    intrinsic: -0.7
+                  translation:
+                    early: [0, -13, 7]
+            last:
+              parameters:
+                layout:
+                  translation:
+                    early: [0, 0, -1]
+    aux0:
+      columns:
+        last:
+          parameters:
+            layout:
+              translation:
+                early: [0,0,0]
+keys:
+  styles:
+    default:
+      style: maquette
+      switch-type: mx
+      skirt-length: 4.6
+      skirt-thickness: 4.6
+      top-size: [12.7, 12.7, 3.3]
+    minimal-short:
+      style: maquette
+      switch-type: mx
+      top-size: [12.7, 12.7, 3.3]
+      skirt-length: 4.6
+      skirt-thickness: 4.6
+    minimal-tall:
+      style: maquette
+      switch-type: mx
+      top-size: [12.7, 12.7, 3.3]
+      skirt-length: 4.6
+      skirt-thickness: 4.6
+dfm:
+  error-general: -1
