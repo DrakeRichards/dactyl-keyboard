@@ -1,0 +1,9 @@
+main-body:
+  bottom-plate:
+    installation:
+      thickness: 2.5
+      fasteners:
+        bolt-properties:
+          m-diameter: 4
+          head-type: button
+          total-length: 5
