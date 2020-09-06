@@ -97,6 +97,7 @@ by-key:
               matrix:
                 separation:
                   row: 0.9
+                  column: 1.5
               roll:
                 intrinsic: -0.35
               pitch:
@@ -107,18 +108,38 @@ by-key:
         "-2":
           parameters:
             key-style: r1
+          columns:
+            last:
+              parameters:
+                key-style: r1w
         "-1":
           parameters:
             key-style: r2
+          columns:
+            last:
+              parameters:
+                key-style: r2w
         "0":
           parameters:
             key-style: r3
+          columns:
+            last:
+              parameters:
+                key-style: r3w
         "1":
           parameters:
             key-style: r4
+          columns:
+            last:
+              parameters:
+                key-style: r4w
         "2":
           parameters:
             key-style: r5
+          columns:
+            last:
+              parameters:
+                key-style: r5w
 secondaries:
   #ring-to-pinky bridge points
   rtp0:

@@ -36,10 +36,38 @@ keys:
       top-size: [12.75, 12.75, 9.5]
       skirt-thickness: 3.6
       skirt-length: 4.0
-    dsa:
-      style: minimal
+    r1w:
+      style: maquette
       switch-type: mx
-      top-size: [12.25, 12.25, 3.6]
-      skirt-length: 3.7
-      skirt-thickness: 4
-      sectioned: true
+      top-size: [22.75, 12.75, 9.5]
+      skirt-thickness: 3.6
+      skirt-length: 4.0
+      unit-size: [1.5, 1]
+    r2w:
+      style: maquette
+      switch-type: mx
+      top-size: [22.75, 12.75, 7.2]
+      skirt-thickness: 3.6
+      skirt-length: 4.0
+      unit-size: [1.5, 1]
+    r3w:
+      style: maquette
+      switch-type: mx
+      top-size: [22.75, 12.75, 6.7]
+      skirt-thickness: 3.6
+      skirt-length: 4.0
+      unit-size: [1.5, 1]
+    r4w:
+      style: maquette
+      switch-type: mx
+      top-size: [22.75, 12.75, 7.2]
+      skirt-thickness: 3.6
+      skirt-length: 4.0
+      unit-size: [1.5, 1]
+    r5w:
+      style: maquette
+      switch-type: mx
+      top-size: [22.75, 12.75, 9.5]
+      skirt-thickness: 3.6
+      skirt-length: 4.0
+      unit-size: [1.5, 1]
