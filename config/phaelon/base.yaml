@@ -1,0 +1,163 @@
+key-clusters:
+  main:
+    matrix-columns: 
+    - rows-above-home: 2
+      rows-below-home: 1
+    - rows-above-home: 2
+      rows-below-home: 1
+    - rows-above-home: 2
+      rows-below-home: 2
+    - rows-above-home: 2
+      rows-below-home: 2
+    - rows-above-home: 2
+      rows-below-home: 1
+    - rows-above-home: 2
+      rows-below-home: 1
+    style: standard
+    aliases: 
+      lower-left: [first, first]
+      upper-left: [first, last]
+      lower-right: [last, first]
+      upper-right: [last, last]
+      i0a: [0, first]
+      i0b: [1, first]
+      m0: [2, first]
+      r0: [3, first]
+      p0a: [4, first]
+      p0b: [5, first]
+    anchoring:
+      anchor: origin
+      extrinsic-offset: [0, 0, 10]
+by-key:
+  clusters:
+    main:
+      parameters:
+        layout:
+          matrix:
+            neutral:
+              column: 2
+      columns:
+        "0":
+          parameters:
+            layout:
+              matrix:
+                separation:
+                  row: 0.7
+                  column: 1.0
+              pitch:
+                progressive: 0.4
+              roll:
+                intrinsic: 0.3
+              translation: 
+                mid: [0, -2, 9]
+        "1":
+          parameters:
+            layout:
+              matrix:
+                separation:
+                  row: 2.0
+              pitch:
+                progressive: 0.4
+              translation: 
+                early: [0, 0, 5]
+        "2":
+          parameters:
+            layout:
+              matrix:
+                separation:
+                  row: 0.1
+              pitch:
+                progressive: 0.4
+                intrinsic: 0.1
+              translation: 
+                early: [0, 9, 0]
+        "3":
+          parameters:
+            layout:
+              matrix:
+                separation:
+                  row: 1.8
+              pitch:
+                progressive: 0.37
+              translation: 
+                early: [0, 2, 5]
+        "4":
+          parameters:
+            layout:
+              matrix:
+                separation:
+                  row: 0.0
+              pitch:
+                progressive: 0.45
+              translation: 
+                mid: [3, -15, 10]
+        "5":
+          parameters:
+            layout:
+              matrix:
+                separation:
+                  row: 0.9
+              roll:
+                intrinsic: -0.35
+              pitch:
+                progressive: 0.45
+              translation: 
+                mid: [5, -16, 15]
+      rows:
+        "-2":
+          parameters:
+            key-style: r1
+        "-1":
+          parameters:
+            key-style: r2
+        "0":
+          parameters:
+            key-style: r3
+        "1":
+          parameters:
+            key-style: r4
+        "2":
+          parameters:
+            key-style: r5
+secondaries:
+  #ring-to-pinky bridge points
+  rtp0:
+    anchoring:
+      anchor: r0
+      side: NNE
+    size: 2
+  rtp1:
+    anchoring:
+      anchor: r0
+      side: SSE
+    size: 2
+  rtp2:
+    anchoring:
+      anchor: p0
+      side: SSW
+    size: 2
+tweaks:
+  ring-to-pinky:
+    - chunk-size: 3
+      hull-around:
+        - [r0, NE, 0]
+        - [r0, SE, 0]
+        - [p0a, SW, 0]
+  index-to-index:
+    - hull-around:
+      - hull-around:
+        - [i0a, SE]
+        - [i0b, SW]
+        - [i0b, SE]
+      - hull-around:
+        - [i0a, SE]
+        - [i0b, SE]
+        - [m0, SW]
+    - hull-around:
+      - [m0, SW]
+      - [m0, NW]
+      - [i0b, SE]
+main-body:
+  reflect: true
+dfm:
+  error-general: -1

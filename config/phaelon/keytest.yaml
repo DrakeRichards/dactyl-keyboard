@@ -1,0 +1,38 @@
+key-clusters:
+  main:
+    matrix-columns: 
+    - rows-above-home: 2
+      rows-below-home: 2
+    anchoring:
+      anchor: origin
+      extrinsic-offset: [0, 0, 10]
+by-key:
+  clusters:
+    main:
+      columns:
+        "0":
+          parameters:
+            layout:
+              matrix:
+                separation:
+                  row: 1.7
+              pitch:
+                progressive: 0.4
+              translation: 
+                early: [0, 0, 5]
+      rows:
+        "-2":
+          parameters:
+            key-style: r1
+        "-1":
+          parameters:
+            key-style: r2
+        "0":
+          parameters:
+            key-style: r3
+        "1":
+          parameters:
+            key-style: r4
+        "2":
+          parameters:
+            key-style: r5
