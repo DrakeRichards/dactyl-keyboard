@@ -29,6 +29,10 @@ key-clusters:
       anchor: origin
       extrinsic-offset: [0, 0, 10]
 by-key:
+  parameters:
+    channel:
+      height: 20
+      top-width: 13
   clusters:
     main:
       parameters:
@@ -96,14 +100,22 @@ by-key:
             layout:
               matrix:
                 separation:
-                  row: 0.9
-                  column: 1.5
+                  row: 1.0
+                  column: 1.3
               roll:
-                intrinsic: -0.35
+                intrinsic: -0.20
               pitch:
                 progressive: 0.45
               translation: 
-                mid: [5, -16, 15]
+                mid: [5, -16, 14]
+          rows:
+            "2":
+              parameters:
+                layout:
+                  yaw:
+                    intrinsic: 0.09
+                  translation:
+                    late: [-4.5, -1.2, 0]
       rows:
         "-2":
           parameters:
@@ -136,10 +148,6 @@ by-key:
         "2":
           parameters:
             key-style: r5
-          columns:
-            last:
-              parameters:
-                key-style: r5w
 secondaries:
   #ring-to-pinky bridge points
   rtp0:
