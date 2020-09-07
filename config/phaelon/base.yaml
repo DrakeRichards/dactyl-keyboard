@@ -75,6 +75,12 @@ by-key:
                 intrinsic: 0.1
               translation: 
                 early: [0, 9, 0]
+          rows:
+            "-2":
+              parameters:
+                layout:
+                  translation:
+                    mid: [0, -0.2, 0]
         "3":
           parameters:
             layout:
