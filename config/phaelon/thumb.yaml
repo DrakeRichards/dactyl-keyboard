@@ -1,0 +1,90 @@
+key-clusters:
+  thumb:
+    anchoring:
+      anchor: origin
+      extrinsic-offset: [0, 0, 30]
+      extrinsic-rotation: [0, -1, 0]
+      preserve-orientation: true
+    matrix-columns:
+    - rows-above-home: 1
+      rows-below-home: 0
+    - rows-above-home: 1
+      rows-below-home: 0
+    - rows-above-home: 1
+      rows-below-home: 0
+    aliases:
+      tc: [first, 0]
+      t1: [first, last]
+      t2: [last, last]
+      t3: [last, first]
+      t4: [first, first]
+by-key:
+  parameters:
+    channel:
+      height: 20
+      top-width: 13
+  clusters:
+    thumb:
+      parameters:
+        layout:
+          matrix:
+            neutral:
+              column: 1
+            separation:
+              column: 0.5
+          roll:
+            progressive: 0.3
+      columns:
+        "0":
+          parameters:
+            layout:
+              pitch:
+                base: 0.2
+                progressive: 0.3
+              yaw:
+                base: 0.05
+          rows:
+            first:
+              parameters:
+                key-style: r2
+            last:
+              parameters:
+                key-style: r4
+        "1":
+          parameters:
+            layout:
+              translation:
+                early: [0, 2, 0]
+              pitch:
+                progressive: 0.7
+          rows:
+            first:
+              parameters:
+                key-style: r3t
+                layout:
+                  translation:
+                    mid: [0, -8, 0]
+            last:
+              parameters:
+                key-style: r3
+        "2":
+          parameters:
+            layout:
+              pitch:
+                base: 0.2
+                progressive: 0.3
+              yaw:
+                base: -0.05
+              translation:
+                mid: [0, -3, 0]
+          rows:
+            first:
+              parameters:
+                key-style: r2
+            last:
+              parameters:
+                key-style: r4
+main-body:
+  reflect: true
+dfm:
+  error-general: -1

@@ -28,6 +28,22 @@ key-clusters:
     anchoring:
       anchor: origin
       extrinsic-offset: [0, 0, 10]
+  thumb:
+    anchoring:
+      anchor: i0b
+      extrinsic-offset: [-8, -16, 29]
+      preserve-orientation: true
+    matrix-columns:
+    - rows-above-home: 1
+    - rows-above-home: 1
+      rows-below-home: 1
+    - rows-above-home: 1
+    aliases:
+      tc: [first, 0]
+      t1: [first, last]
+      t2: [last, last]
+      t3: [last, first]
+      t4: [first, first]
 by-key:
   parameters:
     channel:

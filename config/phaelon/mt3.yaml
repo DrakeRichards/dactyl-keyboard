@@ -71,3 +71,10 @@ keys:
       skirt-thickness: 3.6
       skirt-length: 4.0
       unit-size: [1.5, 1]
+    r3t:
+      style: maquette
+      switch-type: mx
+      top-size: [12.75, 22.75, 6.7]
+      skirt-thickness: 3.6
+      skirt-length: 4.0
+      unit-size: [1, 1.5]
