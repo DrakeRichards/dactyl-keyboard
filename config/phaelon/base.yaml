@@ -40,6 +40,8 @@ by-key:
           matrix:
             neutral:
               column: 2
+          roll:
+            base: 0.3
       columns:
         "0":
           parameters:
