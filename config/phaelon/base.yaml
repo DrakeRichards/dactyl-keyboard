@@ -21,14 +21,30 @@ key-clusters:
       upper-right: [last, last]
       i0a: [0, first]
       i0b: [1, first]
+      iHome: [1, 0]
       m0: [2, first]
       r0: [3, first]
       p0a: [4, first]
       p0b: [5, first]
     anchoring:
       anchor: origin
-      extrinsic-offset: [0, 0, 40]
-      extrinsic-rotation: [0, 0.7, 0]
+      intrinsic-offset: [0, 0, 50]
+      intrinsic-rotation: [0, 0.7, 0]
+  thumb:
+    anchoring:
+      anchor: iHome
+      intrinsic-rotation: [0, -2.2, 0.3]
+      extrinsic-offset: [-25, -40, -35]
+    matrix-columns:
+    - rows-above-home: 1
+    - rows-above-home: 1
+    - rows-above-home: 1
+    aliases:
+      tc: [first, 0]
+      t1: [first, last]
+      t2: [last, last]
+      t3: [last, first]
+      t4: [first, first]
 by-key:
   parameters:
     channel:
@@ -155,6 +171,66 @@ by-key:
         "2":
           parameters:
             key-style: r5
+    thumb:
+      parameters:
+        layout:
+          matrix:
+            neutral:
+              column: 1
+            separation:
+              column: 0.5
+          roll:
+            progressive: 0.3
+      columns:
+        "0":
+          parameters:
+            layout:
+              pitch:
+                base: 0.2
+                progressive: 0.3
+              yaw:
+                base: 0.05
+          rows:
+            first:
+              parameters:
+                key-style: r2
+            last:
+              parameters:
+                key-style: r4
+        "1":
+          parameters:
+            layout:
+              translation:
+                early: [0, 2, 0]
+              pitch:
+                progressive: 0.7
+          rows:
+            first:
+              parameters:
+                key-style: r3t
+                layout:
+                  translation:
+                    mid: [0, -8, 0]
+            last:
+              parameters:
+                key-style: r3
+        "2":
+          parameters:
+            layout:
+              pitch:
+                base: 0.2
+                progressive: 0.3
+              yaw:
+                base: -0.05
+              translation:
+                mid: [0, -3, 0]
+          rows:
+            first:
+              parameters:
+                key-style: r2
+            last:
+              parameters:
+                key-style: r4
 secondaries:
   #ring-to-pinky bridge points
   rtp0:
