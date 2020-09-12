@@ -55,7 +55,7 @@ by-key:
   parameters:
     channel:
       height: 20
-      top-width: 13
+      top-width: 18
   clusters:
     main:
       parameters:
@@ -167,12 +167,6 @@ by-key:
                 progressive: 0.45
               translation: 
                 mid: [3, -15, 10]
-          sides:
-            south:
-              parameters:
-                wall:
-                  to-ground: true
-                  extent: 2
         "5":
           parameters:
             layout:
@@ -193,13 +187,17 @@ by-key:
                   extent: 5
                   thickness: 3
                   to-ground: true
-                  parallel: 5
+                  parallel: 3
+                  bevel: 5
+                  perpendicular: 5
             south:
               parameters:
                 wall:
                   to-ground: true
                   extent: 5
                   parallel: 5
+                  bevel: 5
+                  perpendicular: 3
           rows:
             "2":
               parameters:
@@ -331,13 +329,12 @@ secondaries:
       intrinsic-offset: [0, -3, 1.5]
 tweaks:
   ring-to-pinky:
-    - hull-around:
+    - chunk-size: 3
+      hull-around:
       - [r0, NE, 0]
       - [r0, SE, 0]
       - [p0a, SW, 0]
-    - hull-around:
-      - [r0, SE, 0, 3]
-      - [p0a, SW, 0, 3]
+      - [r0, SE, 2]
   index-to-index:
     - chunk-size: 3
       hull-around:
