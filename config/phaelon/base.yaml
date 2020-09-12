@@ -20,6 +20,9 @@ key-clusters:
       lower-right: [last, first]
       upper-right: [last, last]
       i0a: [0, first]
+      i1a: [0, 0]
+      i2a: [0, 1]
+      i3a: [0, 2]
       i0b: [1, first]
       iHome: [1, 0]
       m0: [2, first]
@@ -30,21 +33,24 @@ key-clusters:
       anchor: origin
       intrinsic-offset: [0, 0, 50]
       intrinsic-rotation: [0, 0.7, 0]
+      preserve-orientation: true
   thumb:
     anchoring:
       anchor: iHome
-      intrinsic-rotation: [0, -2.2, 0.3]
+      intrinsic-rotation: [0, -1.4, 0.5]
       extrinsic-offset: [-25, -40, -35]
+      preserve-orientation: true
     matrix-columns:
     - rows-above-home: 1
     - rows-above-home: 1
     - rows-above-home: 1
     aliases:
-      tc: [first, 0]
-      t1: [first, last]
-      t2: [last, last]
-      t3: [last, first]
-      t4: [first, first]
+      ttl: [last, last]
+      ttr: [last, first]
+      tml: [1, last]
+      tmr: [1, first]
+      tbl: [first, last]
+      tbr: [first, first]
 by-key:
   parameters:
     channel:
@@ -71,6 +77,37 @@ by-key:
                 intrinsic: 0.3
               translation: 
                 mid: [0, -2, 9]
+          rows:
+            last:
+              sides:
+                west:
+                  parameters:
+                    wall:
+                      extent: 5
+                      to-ground: true
+            "1":
+              sides:
+                west:
+                  parameters:
+                    wall:
+                      extent: 5
+                      to-ground: true
+            "0":
+              sides:
+                west:
+                  parameters:
+                    wall:
+                      extent: 5
+            "-1":
+              sides:
+                west:
+                  parameters:
+                    wall:
+                      extent: 5
+                south:
+                  parameters:
+                    wall:
+                      extent: 5
         "1":
           parameters:
             layout:
@@ -98,6 +135,12 @@ by-key:
                 layout:
                   translation:
                     mid: [0, -0.2, 0]
+          sides:
+            south:
+              parameters:
+                wall:
+                  extent: 5
+                  to-ground: true
         "3":
           parameters:
             layout:
@@ -108,6 +151,12 @@ by-key:
                 progressive: 0.37
               translation: 
                 early: [0, 2, 5]
+          sides:
+            south:
+              parameters:
+                wall:
+                  extent: 2
+                  to-ground: true
         "4":
           parameters:
             layout:
@@ -118,6 +167,12 @@ by-key:
                 progressive: 0.45
               translation: 
                 mid: [3, -15, 10]
+          sides:
+            south:
+              parameters:
+                wall:
+                  to-ground: true
+                  extent: 2
         "5":
           parameters:
             layout:
@@ -131,6 +186,20 @@ by-key:
                 progressive: 0.45
               translation: 
                 mid: [5.5, -16, 17]
+          sides:
+            east:
+              parameters:
+                wall:
+                  extent: 5
+                  thickness: 3
+                  to-ground: true
+                  parallel: 5
+            south:
+              parameters:
+                wall:
+                  to-ground: true
+                  extent: 5
+                  parallel: 5
           rows:
             "2":
               parameters:
@@ -171,6 +240,12 @@ by-key:
         "2":
           parameters:
             key-style: r5
+          sides:
+            north:
+              parameters:
+                wall:
+                  extent: 5
+                  to-ground: true
     thumb:
       parameters:
         layout:
@@ -197,6 +272,12 @@ by-key:
             last:
               parameters:
                 key-style: r4
+          sides:
+            west:
+              parameters:
+                wall:
+                  extent: 1
+                  to-ground: true
         "1":
           parameters:
             layout:
@@ -214,6 +295,11 @@ by-key:
             last:
               parameters:
                 key-style: r3
+          sides:
+            north:
+              parameters:
+                wall:
+                  extent: 5
         "2":
           parameters:
             layout:
@@ -231,44 +317,97 @@ by-key:
             last:
               parameters:
                 key-style: r4
+          sides:
+            north:
+              parameters:
+                wall:
+                  extent: 5
 secondaries:
-  #ring-to-pinky bridge points
-  rtp0:
+  ttm:
     anchoring:
-      anchor: r0
-      side: NNE
-    size: 2
-  rtp1:
-    anchoring:
-      anchor: r0
-      side: SSE
-    size: 2
-  rtp2:
-    anchoring:
-      anchor: p0
-      side: SSW
-    size: 2
+      anchor: ttl
+      side: SE
+      segment: 0
+      intrinsic-offset: [0, -3, 1.5]
 tweaks:
   ring-to-pinky:
+    - hull-around:
+      - [r0, NE, 0]
+      - [r0, SE, 0]
+      - [p0a, SW, 0]
+    - hull-around:
+      - [r0, SE, 0, 3]
+      - [p0a, SW, 0, 3]
+  index-to-index:
     - chunk-size: 3
       hull-around:
-        - [r0, NE, 0]
-        - [r0, SE, 0]
-        - [p0a, SW, 0]
-  index-to-index:
+      - [i0b, SW, 0]
+      - [i0a, SE, 0]
+      - [i0b, SE, 0]
+      - [m0, SW, 0]
+      - [m0, NW, 0]
     - hull-around:
-      - hull-around:
-        - [i0a, SE]
-        - [i0b, SW]
-        - [i0b, SE]
-      - hull-around:
-        - [i0a, SE]
-        - [i0b, SE]
-        - [m0, SW]
+      - [i0a, SE, 0, 2]
+      - [m0, SW, 0, 2]
+  thumb-top-to-main:
+    # Connects the top of the thumb cluster to main
+    - chunk-size: 3
+      hull-around:
+      - [i0a, NW, 2]
+      - [ttl, NE, 0]
+      - [i0a, SW, 2]
+      - [ttl, SE, 0]
+      - [ttr, NE, 0]
+    - chunk-size: 3
+      hull-around:
+      - [i0a, SW, 2]
+      - [ttr, NE, 0]
+      - [i0a, SE, 2]
+      - [ttr, SE, 0]
+      - [m0, SW, 2]
+      - [ttr, SW, 0]
+      - [tmr, SE, 0]
+    - at-ground: true
+      hull-around:
+      - [tmr, SE, 0]
+      - [m0, SW, 2]
+      - [tmr, SW, 0]
     - hull-around:
-      - [m0, SW]
-      - [m0, NW]
-      - [i0b, SE]
+      - [tmr, SW, 0]
+      - [tbr, SE, 0]
+      - [tbr, SW, 0]
+    - at-ground: true
+      hull-around:
+      - [tmr, SW, 0]
+      - [tbr, SW, 0]
+  thumb-left-to-main:
+    # bottom-left finishing touches
+    - chunk-size: 3
+      hull-around:
+      - [tml, NW, 2]
+      - [i2a, SW, 2]
+      - [tml, NNE, 2]
+      - [i1a, NW, 2]
+      - [ttl, NW, 2]
+      - [i1a, SW, 2]
+      - [ttl, NE, 2]
+      - [i0a, NW, 2]
+      - [ttl, NE, 0]
+    - at-ground: true
+      hull-around:
+      - [i2a, SW, 2]
+      - [tml, NW, 2]
+    - at-ground: true
+      hull-around:
+      - [tml, NW, 0, 3]
+    - hull-around:
+      - [tml, NW, 0]
+      - [tbl, NE, 0]
+      - [tbl, NW, 0]
+    - at-ground: true
+      hull-around:
+      - [tml, NW, 0, 1]
+      - [tbl, NW, 0]
 main-body:
   reflect: true
 dfm:
