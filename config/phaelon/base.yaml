@@ -31,14 +31,14 @@ key-clusters:
       p0b: [5, first]
     anchoring:
       anchor: origin
-      intrinsic-offset: [0, 0, 50]
+      intrinsic-offset: [0, 0, 35]
       intrinsic-rotation: [0, 0.7, 0]
       preserve-orientation: true
   thumb:
     anchoring:
       anchor: iHome
-      intrinsic-rotation: [0, -1.4, 0.5]
-      extrinsic-offset: [-25, -40, -35]
+      intrinsic-rotation: [0, -1.4, 0.35]
+      extrinsic-offset: [-15, -40, -20]
       preserve-orientation: true
     matrix-columns:
     - rows-above-home: 1
@@ -167,6 +167,12 @@ by-key:
                 progressive: 0.45
               translation: 
                 mid: [3, -15, 10]
+          rows:
+            last:
+              parameters:
+                layout:
+                  translation:
+                    late: [0, 0.5, 0]
         "5":
           parameters:
             layout:
@@ -205,7 +211,7 @@ by-key:
                   yaw:
                     intrinsic: 0.09
                   translation:
-                    late: [-4.3, -1.1, 0]
+                    late: [-4.3, -0.9, 0]
       rows:
         "-2":
           parameters:
