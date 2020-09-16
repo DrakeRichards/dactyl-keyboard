@@ -26,7 +26,9 @@ key-clusters:
       i0b: [1, first]
       iHome: [1, 0]
       m0: [2, first]
+      mn: [2, last]
       r0: [3, first]
+      rn: [3, last]
       p0a: [4, first]
       p0b: [5, first]
     anchoring:
