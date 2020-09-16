@@ -31,14 +31,14 @@ key-clusters:
       p0b: [5, first]
     anchoring:
       anchor: origin
-      intrinsic-offset: [0, 0, 35]
+      intrinsic-offset: [0, 0, 40]
       intrinsic-rotation: [0, 0.7, 0]
       preserve-orientation: true
   thumb:
     anchoring:
       anchor: iHome
-      intrinsic-rotation: [0, -1.4, 0.35]
-      extrinsic-offset: [-15, -40, -20]
+      intrinsic-rotation: [0, -1.4, 0.20]
+      extrinsic-offset: [-30, -40, -10]
       preserve-orientation: true
     matrix-columns:
     - rows-above-home: 1
@@ -84,6 +84,7 @@ by-key:
                   parameters:
                     wall:
                       extent: 5
+                      parallel: 5
                       to-ground: true
             "1":
               sides:
@@ -91,6 +92,7 @@ by-key:
                   parameters:
                     wall:
                       extent: 5
+                      parallel: 5
                       to-ground: true
             "0":
               sides:
@@ -98,16 +100,19 @@ by-key:
                   parameters:
                     wall:
                       extent: 5
+                      parallel: 5
             "-1":
               sides:
                 west:
                   parameters:
                     wall:
                       extent: 5
+                      parallel: 5
                 south:
                   parameters:
                     wall:
                       extent: 5
+                      parallel: 5
         "1":
           parameters:
             layout:
@@ -140,6 +145,7 @@ by-key:
               parameters:
                 wall:
                   extent: 5
+                  parallel: 5
                   to-ground: true
         "3":
           parameters:
@@ -155,7 +161,8 @@ by-key:
             south:
               parameters:
                 wall:
-                  extent: 2
+                  extent: 5
+                  parallel: 5
                   to-ground: true
         "4":
           parameters:
@@ -173,6 +180,13 @@ by-key:
                 layout:
                   translation:
                     late: [0, 0.5, 0]
+          sides:
+            south:
+              parameters:
+                wall:
+                  extent: 5
+                  parallel: 7
+                  to-ground: true
         "5":
           parameters:
             layout:
@@ -191,19 +205,14 @@ by-key:
               parameters:
                 wall:
                   extent: 5
-                  thickness: 3
                   to-ground: true
                   parallel: 3
-                  bevel: 5
-                  perpendicular: 5
             south:
               parameters:
                 wall:
                   to-ground: true
                   extent: 5
                   parallel: 5
-                  bevel: 5
-                  perpendicular: 3
           rows:
             "2":
               parameters:
@@ -249,6 +258,7 @@ by-key:
               parameters:
                 wall:
                   extent: 5
+                  parallel: 5
                   to-ground: true
     thumb:
       parameters:
@@ -277,11 +287,16 @@ by-key:
               parameters:
                 key-style: r4
           sides:
-            west:
+            south:
               parameters:
                 wall:
-                  extent: 1
-                  to-ground: true
+                  extent: 5
+                  parallel: 5
+            north:
+              parameters:
+                wall:
+                  extent: 5
+                  parallel: 5
         "1":
           parameters:
             layout:
@@ -304,6 +319,12 @@ by-key:
               parameters:
                 wall:
                   extent: 5
+                  parallel: 5
+            south:
+              parameters:
+                wall:
+                  extent: 5
+                  parallel: 5
         "2":
           parameters:
             layout:
@@ -326,21 +347,32 @@ by-key:
               parameters:
                 wall:
                   extent: 5
+                  parallel: 5
+            south:
+              parameters:
+                wall:
+                  extent: 5
+                  parallel: 5
 secondaries:
-  ttm:
-    anchoring:
-      anchor: ttl
-      side: SE
-      segment: 0
-      intrinsic-offset: [0, -3, 1.5]
 tweaks:
   ring-to-pinky:
+    # Filling triangle gap
     - chunk-size: 3
       hull-around:
       - [r0, NE, 0]
       - [r0, SE, 0]
       - [p0a, SW, 0]
-      - [r0, SE, 2]
+    # Bridging gap between ring and pinky b
+    - chunk-size: 2
+      hull-around:
+      - [r0, SSE, 0, 3]
+      - [p0a, SSW, 0, 3]
+    - at-ground: true
+      chunk-size: 2
+      hull-around:
+      - [r0, SSE, 3]
+      - [p0a, SSW, 3]
+      - [p0a, SSE, 3]
   index-to-index:
     - chunk-size: 3
       hull-around:
@@ -350,67 +382,69 @@ tweaks:
       - [m0, SW, 0]
       - [m0, NW, 0]
     - hull-around:
-      - [i0a, SE, 0, 2]
-      - [m0, SW, 0, 2]
-  thumb-top-to-main:
-    # Connects the top of the thumb cluster to main
+      - [i0a, SSE, 0, 3]
+      - [m0, SSW, 0, 3]
+  thumb-skirt:
+    # Skirt at bottom of thumb cluster
+    - at-ground: true
+      chunk-size: 2
+      hull-around:
+      - [tbl, NW, 0]
+      - [tbl, SW, 0]
+      - [tbr, NW, 0]
+      - [tbr, SW, 0]
+    # Skirt at outer edges of bottom
+    - at-ground: true
+      hull-around:
+      - [tbl, NNW, 0, 3]
+    - at-ground: true
+      hull-around:
+      - [tbr, SSW, 0, 3]
+  thumb-left:
+    # Top-left side of thumb cluster
     - chunk-size: 3
       hull-around:
-      - [i0a, NW, 2]
-      - [ttl, NE, 0]
-      - [i0a, SW, 2]
       - [ttl, SE, 0]
-      - [ttr, NE, 0]
-    - chunk-size: 3
-      hull-around:
-      - [i0a, SW, 2]
-      - [ttr, NE, 0]
-      - [i0a, SE, 2]
-      - [ttr, SE, 0]
-      - [m0, SW, 2]
-      - [ttr, SW, 0]
-      - [tmr, SE, 0]
-    - at-ground: true
-      hull-around:
-      - [tmr, SE, 0]
-      - [m0, SW, 2]
-      - [tmr, SW, 0]
-    - hull-around:
-      - [tmr, SW, 0]
-      - [tbr, SE, 0]
-      - [tbr, SW, 0]
-    - at-ground: true
-      hull-around:
-      - [tmr, SW, 0]
-      - [tbr, SW, 0]
-  thumb-left-to-main:
-    # bottom-left finishing touches
-    - chunk-size: 3
-      hull-around:
-      - [tml, NW, 2]
-      - [i2a, SW, 2]
-      - [tml, NNE, 2]
-      - [i1a, NW, 2]
-      - [ttl, NW, 2]
-      - [i1a, SW, 2]
-      - [ttl, NE, 2]
-      - [i0a, NW, 2]
+      - [i0a, WSW, 2]
       - [ttl, NE, 0]
+      - [i0a, WNW, 2]
+      - [ttl, NNE, 3]
+      - [i1a, WSW, 2]
+      - [i1a, WNW, 2]
+    # Left side of thumb cluster
+    - chunk-size: 3
+      hull-around:
+      - [ttl, NNE, 2]
+      - [i1a, WNW, 2]
+      - [ttl, NNW, 2]
+      - [i2a, WSW, 2]
+      - [tml, NNE, 2]
+      - [i2a, WSW, 2]
+      - [tml, NNW, 2]
+    # Left side skirt
     - at-ground: true
       hull-around:
-      - [i2a, SW, 2]
-      - [tml, NW, 2]
-    - at-ground: true
-      hull-around:
-      - [tml, NW, 0, 3]
+      - [i2a, WSW, 2]
+      - [tml, NNW, 2]
     - hull-around:
-      - [tml, NW, 0]
-      - [tbl, NE, 0]
-      - [tbl, NW, 0]
+      - [tml, NNW, 2]
+      - [tbl, NNW, 2]
+      - [tbl, NNE, 0, 3]
     - at-ground: true
       hull-around:
-      - [tml, NW, 0, 1]
-      - [tbl, NW, 0]
+      - [tml, NNW, 2]
+      - [tbl, NNW, 2]
+  thumb-right:
+    - chunk-size: 3
+      hull-around:
+      - [ttl, SSE, 0]
+      - [i0a, WSW, 2]
+      - [ttr, NNE, 0]
+      - [i0a, SSW, 2]
+      - [ttr, SSE, 0]
+      - [i0a, SSW, 2]
+      - [ttr, SSE, 2]
+      - [i0a, SW, 0]
 main-body:
   reflect: true
 dfm:
