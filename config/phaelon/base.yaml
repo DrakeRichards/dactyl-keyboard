@@ -435,6 +435,7 @@ tweaks:
       - [tml, NNW, 2]
       - [tbl, NNW, 2]
   thumb-right:
+thumb    # Top-right webbing
     - chunk-size: 3
       hull-around:
       - [ttl, SSE, 0]
@@ -445,6 +446,35 @@ tweaks:
       - [i0a, SSW, 2]
       - [ttr, SSE, 2]
       - [i0a, SW, 0]
+      - [ttr, SSE, 2]
+      - [i0a, SSE, 0]
+      - [ttr, SSW, 2]
+      - [i0a, SSE, 2]
+      - [m0, SSW, 2]
+    # Right webbing
+    - hull-around:
+      - [ttr, SSW, 2]
+      - [m0, SSW, 2]
+      - [tmr, SSE, 2]
+    - chunk-size: 3
+      hull-around:
+      - [ttr, SSW, 2]
+      - [tmr, SSE, 2]
+      - [m0, SSW, 2]
+      - [tmr, SSW, 2]
+    - at-ground: true
+      hull-around:
+      - [tmr, SSW, 2]
+      - [m0, SSW, 2]
+    - hull-around:
+      - [tmr, SSW, 2]
+      - [tbr, SSW, 2]
+      - [tbr, SE, 0]
+      - [tbr, SSE, 3]
+    - at-ground: true
+      hull-around:
+      - [tbr, SSW, 2]
+      - [tmr, SSW, 2]
 main-body:
   reflect: true
 dfm:
