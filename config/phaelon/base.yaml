@@ -435,7 +435,7 @@ tweaks:
       - [tml, NNW, 2]
       - [tbl, NNW, 2]
   thumb-right:
-thumb    # Top-right webbing
+    # Top-right webbing
     - chunk-size: 3
       hull-around:
       - [ttl, SSE, 0]
