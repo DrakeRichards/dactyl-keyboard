@@ -24,6 +24,7 @@ key-clusters:
       i2a: [0, 1]
       i3a: [0, 2]
       i0b: [1, first]
+      i3b: [1, last]
       iHome: [1, 0]
       m0: [2, first]
       mn: [2, last]
@@ -479,5 +480,11 @@ tweaks:
       - [tmr, SSW, 2]
 main-body:
   reflect: true
+  rear-housing:
+    include: true
+    anchoring:
+      anchor: i3b
+      extrinsic-offset: [10, 14, 0]
+    size: [75, 25, 30]
 dfm:
   error-general: -1
