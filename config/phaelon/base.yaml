@@ -86,35 +86,33 @@ by-key:
                 west:
                   parameters:
                     wall:
-                      extent: 5
+                      extent: 2
                       parallel: 5
-                      to-ground: true
             "1":
               sides:
                 west:
                   parameters:
                     wall:
-                      extent: 5
+                      extent: 2
                       parallel: 5
-                      to-ground: true
             "0":
               sides:
                 west:
                   parameters:
                     wall:
-                      extent: 5
+                      extent: 2
                       parallel: 5
             "-1":
               sides:
                 west:
                   parameters:
                     wall:
-                      extent: 5
+                      extent: 2
                       parallel: 5
                 south:
                   parameters:
                     wall:
-                      extent: 5
+                      extent: 2
                       parallel: 5
         "1":
           parameters:
@@ -147,7 +145,7 @@ by-key:
             south:
               parameters:
                 wall:
-                  extent: 5
+                  extent: 2
                   parallel: 5
                   to-ground: true
         "3":
@@ -164,7 +162,7 @@ by-key:
             south:
               parameters:
                 wall:
-                  extent: 5
+                  extent: 2
                   parallel: 5
                   to-ground: true
         "4":
@@ -187,8 +185,8 @@ by-key:
             south:
               parameters:
                 wall:
-                  extent: 5
-                  parallel: 7
+                  extent: 2
+                  parallel: 6.65
                   to-ground: true
         "5":
           parameters:
@@ -207,14 +205,14 @@ by-key:
             east:
               parameters:
                 wall:
-                  extent: 5
+                  extent: 2
                   to-ground: true
                   parallel: 3
             south:
               parameters:
                 wall:
                   to-ground: true
-                  extent: 5
+                  extent: 2
                   parallel: 5
           rows:
             "2":
@@ -260,7 +258,7 @@ by-key:
             north:
               parameters:
                 wall:
-                  extent: 5
+                  extent: 2
                   parallel: 5
                   to-ground: true
     thumb:
@@ -293,12 +291,12 @@ by-key:
             south:
               parameters:
                 wall:
-                  extent: 5
+                  extent: 2
                   parallel: 5
             north:
               parameters:
                 wall:
-                  extent: 5
+                  extent: 2
                   parallel: 5
         "1":
           parameters:
@@ -321,12 +319,12 @@ by-key:
             north:
               parameters:
                 wall:
-                  extent: 5
+                  extent: 2
                   parallel: 5
             south:
               parameters:
                 wall:
-                  extent: 5
+                  extent: 2
                   parallel: 5
         "2":
           parameters:
@@ -349,12 +347,12 @@ by-key:
             north:
               parameters:
                 wall:
-                  extent: 5
+                  extent: 2
                   parallel: 5
             south:
               parameters:
                 wall:
-                  extent: 5
+                  extent: 2
                   parallel: 5
 secondaries:
 tweaks:
@@ -368,14 +366,8 @@ tweaks:
     # Bridging gap between ring and pinky b
     - chunk-size: 2
       hull-around:
-      - [r0, SSE, 0, 3]
-      - [p0a, SSW, 0, 3]
-    - at-ground: true
-      chunk-size: 2
-      hull-around:
-      - [r0, SSE, 3]
-      - [p0a, SSW, 3]
-      - [p0a, SSE, 3]
+      - [r0, SSE, 0, 2]
+      - [p0a, SSW, 0, 2]
   index-to-index:
     - chunk-size: 3
       hull-around:
