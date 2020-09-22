@@ -54,6 +54,17 @@ key-clusters:
       tmr: [1, first]
       tbl: [first, last]
       tbr: [first, first]
+  reset-switch:
+    anchoring:
+      anchor: rear-housing-exterior
+      side: N
+      segment: 3
+      intrinsic-rotation: [π/-2, 0, 0]
+      extrinsic-offset: [8, 0, 14]
+    matrix-columns:
+    - rows-above-home: 0
+    aliases:
+      rst: [first, first]
 by-key:
   parameters:
     channel:
@@ -80,6 +91,12 @@ by-key:
                 intrinsic: 0.3
               translation: 
                 mid: [0, -2, 9]
+          sides:
+            north:
+              parameters:
+                wall:
+                  extent: 2
+                  parallel: 5
           rows:
             last:
               sides:
@@ -124,6 +141,12 @@ by-key:
                 progressive: 0.4
               translation: 
                 early: [0, 0, 5]
+          sides:
+            north:
+              parameters:
+                wall:
+                  extent: 2
+                  parallel: 5
         "2":
           parameters:
             layout:
@@ -148,6 +171,11 @@ by-key:
                   extent: 2
                   parallel: 5
                   to-ground: true
+            north:
+              parameters:
+                wall:
+                  extent: 2
+                  parallel: 5
         "3":
           parameters:
             layout:
@@ -165,6 +193,11 @@ by-key:
                   extent: 2
                   parallel: 5
                   to-ground: true
+            north:
+              parameters:
+                wall:
+                  extent: 2
+                  parallel: 5
         "4":
           parameters:
             layout:
@@ -188,6 +221,12 @@ by-key:
                   extent: 2
                   parallel: 6.65
                   to-ground: true
+            north:
+              parameters:
+                wall:
+                  extent: 2
+                  parallel: 5
+                  to-ground: true
         "5":
           parameters:
             layout:
@@ -209,6 +248,12 @@ by-key:
                   to-ground: true
                   parallel: 3
             south:
+              parameters:
+                wall:
+                  to-ground: true
+                  extent: 2
+                  parallel: 5
+            north:
               parameters:
                 wall:
                   to-ground: true
@@ -254,13 +299,6 @@ by-key:
         "2":
           parameters:
             key-style: r5
-          sides:
-            north:
-              parameters:
-                wall:
-                  extent: 2
-                  parallel: 5
-                  to-ground: true
     thumb:
       parameters:
         layout:
@@ -475,8 +513,58 @@ main-body:
   rear-housing:
     include: true
     anchoring:
-      anchor: i3b
-      extrinsic-offset: [10, 14, 0]
-    size: [75, 25, 30]
+      anchor: upper-left
+      extrinsic-offset: [10, 35, 0]
+    size: [50, 15, 55]
+mcu:
+  include: true
+  preview: false
+  type: promicro
+  anchoring:
+    anchor: rear-housing-interior
+    side: NW
+    segment: 3  # Floor level.
+    intrinsic-rotation: [0, π/-2, π/2]
+    extrinsic-offset: [-0.5, -3, 40]
+  support:
+    lock:
+      include: true
+      plate:
+        base-thickness: 2
+        backing-thickness: 3
+      fastener-properties:
+        m-diameter: 4
+        head-type: button
+ports:
+  trrs-jack:
+    include: true
+    type: custom
+    size: [3, 1.75, 3]
+    anchoring:
+      anchor: rear-housing-exterior
+      side: NW
+      segment: 3
+      extrinsic-offset: [0, -7, 14]
+      intrinsic-rotation: [0, 0, π/2]
+    holder:
+      include: false
+      alias: trrs-jack-barrel
+      thickness: 0
+  trrs-body:
+    include: true
+    type: custom
+    size: [12, 4.5, 6.5]
+    alignment:
+      side: E
+      segment: 1
+    anchoring:
+      anchor: trrs-jack
+      side: S
+      intrinsic-rotation: [0, 0, π/2]
+      extrinsic-offset: [-1, 0.5, 0]
+    holder:
+      include: true
+      alias: trrs-body-holder
+      thickness: 2
 dfm:
   error-general: -1
