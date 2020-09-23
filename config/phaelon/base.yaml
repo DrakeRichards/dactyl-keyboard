@@ -70,6 +70,7 @@ by-key:
     channel:
       height: 20
       top-width: 18
+      margin: 1
   clusters:
     main:
       parameters:
@@ -519,27 +520,37 @@ main-body:
 mcu:
   include: true
   preview: false
-  type: promicro
   anchoring:
     anchor: rear-housing-interior
-    side: NW
+    side: WNW
     segment: 3  # Floor level.
     intrinsic-rotation: [0, π/-2, π/2]
-    extrinsic-offset: [-0.5, -3, 40]
+    extrinsic-offset: [-0.5, -2.5, 40]
+  type: promicro
   support:
+    preview: true
     lock:
       include: true
-      plate:
-        base-thickness: 2
-        backing-thickness: 3
+      width-factor: 0.45
       fastener-properties:
         m-diameter: 4
         head-type: button
+      plate:
+        base-thickness: 1
+        clearance: 2
+        backing-thickness: 2.5
+      socket:
+        thickness: 1.2
+      bolt:
+        clearance: 2.5
+        overshoot: 2
+        mount-length: 8
+        mount-thickness: 6
 ports:
   trrs-jack:
     include: true
     type: custom
-    size: [3, 1.75, 3]
+    size: [3, 2.5, 3]
     anchoring:
       anchor: rear-housing-exterior
       side: NW
@@ -561,10 +572,10 @@ ports:
       anchor: trrs-jack
       side: S
       intrinsic-rotation: [0, 0, π/2]
-      extrinsic-offset: [-1, 0.5, 0]
+      extrinsic-offset: [-0.5, 0.5, 0]
     holder:
       include: true
       alias: trrs-body-holder
       thickness: 2
 dfm:
-  error-general: -1
+  error-general: -0.4
