@@ -577,7 +577,13 @@ main-body:
     include: true
     installation:
       dome-caps: true
-      thickness: 2
+      thickness: 3
+      inserts:
+        include: true
+        length: 8
+        diameter:
+          top: 4.5
+          bottom: 5.0
       fasteners:
         bolt-properties:
           m-diameter: 4
@@ -586,19 +592,22 @@ main-body:
         positions:
           - anchor: lower-right
             side: SW
-            intrinsic-offset: [-3, -5, 0]
+            intrinsic-offset: [-3, -4, 0]
           - anchor: tbr
             side: SW
-            intrinsic-offset: [20, -7, 0]
+            intrinsic-offset: [19.5, -6, 0]
           - anchor: tbl
             side: NW
-            intrinsic-offset: [7, 14, 0]
+            intrinsic-offset: [8, 13.5, 0]
           - anchor: rn
             side: NE
-            intrinsic-offset: [-3, 6, 0]
+            intrinsic-offset: [-4, 6, 0]
           - anchor: upper-right
             side: NE
             intrinsic-offset: [-2, 7, 0]
+          - anchor: i2a
+            side: NW
+            intrinsic-offset: [-5, 5, 0]
 mcu:
   include: true
   preview: false
