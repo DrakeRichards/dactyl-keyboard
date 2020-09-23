@@ -34,7 +34,7 @@ key-clusters:
       p0b: [5, first]
     anchoring:
       anchor: origin
-      intrinsic-offset: [0, 0, 40]
+      intrinsic-offset: [0, 0, 43]
       intrinsic-rotation: [0, 0.7, 0]
       preserve-orientation: true
   thumb:
@@ -571,8 +571,34 @@ main-body:
     include: true
     anchoring:
       anchor: upper-left
-      extrinsic-offset: [14.5, 31, 0]
+      extrinsic-offset: [14.5, 31, 3]
     size: [50, 15, 55]
+  bottom-plate:
+    include: true
+    installation:
+      dome-caps: true
+      thickness: 2
+      fasteners:
+        bolt-properties:
+          m-diameter: 4
+          head-type: button
+          total-length: 8
+        positions:
+          - anchor: lower-right
+            side: SW
+            intrinsic-offset: [-3, -5, 0]
+          - anchor: tbr
+            side: SW
+            intrinsic-offset: [20, -7, 0]
+          - anchor: tbl
+            side: NW
+            intrinsic-offset: [7, 14, 0]
+          - anchor: rn
+            side: NE
+            intrinsic-offset: [-3, 6, 0]
+          - anchor: upper-right
+            side: NE
+            intrinsic-offset: [-2, 7, 0]
 mcu:
   include: true
   preview: false
