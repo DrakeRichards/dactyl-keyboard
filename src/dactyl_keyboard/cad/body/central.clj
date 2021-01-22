@@ -109,8 +109,9 @@
         diameter (fprop :bolt-properties :m-diameter)
         z-wall (getopt :central-housing :shape :thickness)
         width (+ diameter (* 2 (rprop :thickness :rim)))
-        z-hole (- (iso/bolt-length (fprop :bolt-properties)) z-wall)
-        z-bridge (min z-hole (rprop :thickness :bridge))
+        depth (- (iso/bolt-length (fprop :bolt-properties)) z-wall)
+        radial (rprop :thickness :bridge :radial)
+        tangential (min depth (rprop :thickness :bridge :tangential))
         x-gabel (abs axial-offset)
         x-inner (+ x-gabel (rprop :width :inner))
         x-taper (+ x-inner (rprop :width :taper))
@@ -118,29 +119,30 @@
     (loft
       ;; The furthermost taper sinks into a straight wall.
       [(model/translate [(signed x-taper) 0 (/ z-wall -2)]
-         (model/cube wafer (dec diameter) wafer))
+         (model/cube wafer radial wafer))
        ;; The thicker base of the anchor.
-       (model/translate [(signed x-inner) 0 (- (+ z-wall (/ z-bridge 2)))]
+       (model/translate [(signed x-inner) 0 (- (+ z-wall (/ tangential 2)))]
          (model/union
-           (model/cube wafer (inc diameter) z-bridge)
-           (model/cube wafer diameter (inc z-bridge))))
-       (model/translate [(signed x-gabel) 0 (- (+ z-wall (/ z-bridge 2)))]
+           (model/cube wafer (inc radial) tangential)
+           (model/cube wafer radial (inc tangential))))
+       (model/translate [(signed x-gabel) 0 (- (+ z-wall (/ tangential 2)))]
          (model/union
-           (model/cube wafer (inc diameter) z-bridge)
+           (model/cube wafer (inc radial) tangential)
            (model/translate [0 0 -1]
-             (model/cube wafer diameter z-bridge))))
+             (model/cube wafer radial tangential))))
        ;; Finally the bridge extending past the base.
-       (model/translate [0 0 (- (+ z-wall (/ z-hole 2)))]
+       (model/translate [0 0 (- (+ z-wall (/ depth 2)))]
          (model/hull  ; Soft edges, more material in the middle.
-           (model/cylinder (/ (inc diameter) 2) z-hole)
-           (model/translate [0 0 (/ z-hole 8)]
-             (model/cylinder (/ width 2) (/ z-hole 3)))))])))
+           (model/cylinder (/ (inc diameter) 2) depth)
+           (model/translate [0 0 (/ depth 8)]
+             (model/cylinder (/ width 2) (/ depth 3)))))])))
 
 (defn- get-offsets
   "Get raw offsets for each point on the interface."
   [interface]
   [(map #(get-in % [:base :offset] [0 0 0]) interface)
-   (map #(get-in % [:adapter :offset] [0 0 0]) interface)])
+   (map #(get-in % [:adapter :segments 0] [0 0 0]) interface)
+   (map #(get-in % [:adapter :segments 1] [0 0 0]) interface)])
 
 (defn- get-widths
   "Get half the width of the central housing and the full width of its
@@ -149,14 +151,28 @@
   [(/ (getopt :central-housing :shape :width) 2)
    (getopt :central-housing :adapter :width)])
 
-(defn- resolve-offsets
+(defn- resolve-shell-offsets
   "Find the 3D coordinates of points on the outer shell of passed interface."
   [getopt interface]
   (let [[half-width adapter-width] (get-widths getopt)
-        [base adapter] (get-offsets interface)
+        [base adapter0 _] (get-offsets interface)
         gabel (shift-points base 0 half-width)]
     [gabel
-     (mapv (partial mapv + [adapter-width 0 0]) gabel (shift-points adapter))]))
+     (mapv (partial mapv + [adapter-width 0 0]) gabel (shift-points adapter0))]))
+
+(defn- resolve-point-offsets
+  "Find the 3D coordinates of more points on the adapter.
+  This extends resolve-shell-offsets with points on the inside of the adapter,
+  which is typically not valid for small subsets of the interface."
+  [getopt interface]
+  (let [[_ _ adapter1] (get-offsets interface)
+        adapter-thickness (getopt :central-housing :shape :thickness)
+        [gabel adapter-outer] (resolve-shell-offsets getopt interface)]
+    [gabel
+     adapter-outer
+     (mapv (partial mapv +)
+           (shift-points adapter-outer adapter-thickness)
+           adapter1)]))
 
 (defn- filter-indexed
   "Filter an interface list while annotating it with its source indices."
@@ -175,7 +191,7 @@
 
 (defn- annotate-interface
   "Annotate relevant points in the central housing interface with additional
-  information relevant only to a shorter, hnce differently indexed, list."
+  information relevant only to a shorter, hence differently indexed, list."
   [interface index-map basepath & subpath-data-pairs]
   (map-indexed
     (fn [global-index item]
@@ -193,21 +209,23 @@
     interface))
 
 (defn- locate-above-ground-points
-  "Derive 3D coordinates on the body of the central housing."
+  "Derive 3D coordinates on the body of the central housing.
+  This uses segment codes: 0 for the outermost vertices on the body, 1 for the
+  innermost."
   [getopt interface]
   (let [[half-width _] (get-widths getopt)
         thickness (getopt :central-housing :shape :thickness)
         [cross-indexed items] (index-map interface :above-ground)
-        [base-offsets _] (get-offsets items)
-        [right-gabel-outer adapter-outer] (resolve-offsets getopt items)
+        [base-offsets _ _] (get-offsets items)
+        [outer adapter0 adapter1] (resolve-point-offsets getopt items)
         shift-left (partial shift-points (mirror-shift base-offsets))]
     (annotate-interface interface cross-indexed [:points :above-ground]
-      [:gabel :right :outer] right-gabel-outer
-      [:gabel :right :inner] (shift-points base-offsets thickness half-width)
-      [:gabel :left :outer] (shift-left 0 - half-width)
-      [:gabel :left :inner] (shift-left thickness - half-width)
-      [:adapter :outer] adapter-outer
-      [:adapter :inner] (shift-points adapter-outer thickness))))
+      [:gabel :right 0] outer
+      [:gabel :right 1] (shift-points base-offsets thickness half-width)
+      [:gabel :left 0] (shift-left 0 - half-width)
+      [:gabel :left 1] (shift-left thickness - half-width)
+      [:adapter 0] adapter0
+      [:adapter 1] adapter1)))
 
 (defn- locate-lip
   "Derive 3D coordinates on the adapter lip of the central housing."
@@ -215,20 +233,36 @@
   (let [[cross-indexed items] (index-map interface :above-ground)
         thickness (getopt :central-housing :adapter :lip :thickness)
         width (partial getopt :central-housing :adapter :lip :width)
-        base (map #(get-in % [:points :above-ground :gabel :right :inner]) items)
+        base (map #(get-in % [:points :above-ground :gabel :right 1]) items)
         shift-in (partial shift-points base)]
     (annotate-interface interface cross-indexed [:points :above-ground]
-      [:lip :outside :outer] (shift-in 0 (width :outer))
-      [:lip :outside :inner] (shift-in thickness (width :outer))
-      [:lip :inside :outer] (shift-in 0 - (+ (width :taper) (width :inner)))
-      [:lip :inside :inner] (shift-in thickness - (width :inner)))))
+      [:lip :outside 0] (shift-in 0 (width :outer))
+      [:lip :outside 1] (shift-in thickness (width :outer))
+      [:lip :inside 0] (shift-in 0 - (+ (width :taper) (width :inner)))
+      [:lip :inside 1] (shift-in thickness - (width :inner)))))
+
+(defn- locate-shim
+  "Derive 3D coordinates on a shim: Negative space for printer inaccuracy.
+  Use one quarter of the general error setting as the inset, because the lip is
+  positive space and the inset works more like a radius than a diameter (see
+  scad-tarmi)."
+  [getopt interface]
+  (let [[cross-indexed items] (index-map interface :above-ground)
+        from (fn [& tail]
+               (map #(get-in % (concat [:points :above-ground] tail)) items))
+        error (/ (abs (getopt :dfm :error-general)) 4)
+        overshoot 20]  ; Arbitrary, meant to cover receivers.
+    (annotate-interface interface cross-indexed [:points :above-ground]
+      [:dfm-shim :inside 1] (shift-points (from :gabel :right 1) error)
+      [:dfm-shim :outside 0] (shift-points (from :gabel :right 0) 0 overshoot)
+      [:dfm-shim :outside 1] (shift-points (from :lip :outside 0) error overshoot))))
 
 (defn- locate-at-ground-points
   "Derive some useful 2D coordinates for drawing bottom plates."
   [getopt interface]
   (let [[cross-indexed items] (index-map interface :at-ground)
         [gabel adapter] (map (partial mapv #(vec (take 2 %)))
-                             (resolve-offsets getopt items))]
+                             (resolve-shell-offsets getopt items))]
     (annotate-interface interface cross-indexed [:points :at-ground]
       [:gabel] gabel
       [:adapter] adapter)))
@@ -240,7 +274,7 @@
   housing or its floor, except as anchors."
   [getopt interface]
   (let [[cross-indexed items] (index-map interface (complement :above-ground))
-        [gabel adapter] (resolve-offsets getopt items)]
+        [gabel adapter] (resolve-shell-offsets getopt items)]
     (annotate-interface interface cross-indexed [:points :ethereal]
       [:gabel] gabel
       [:adapter] adapter)))
@@ -280,6 +314,7 @@
         (map categorize-explicitly)
         (locate-above-ground-points getopt)
         (locate-lip getopt)  ; Uses results from locate-above-ground-points.
+        (locate-shim getopt)  ; Uses results from locate-lip.
         (locate-at-ground-points getopt)
         (locate-non-above-ground-points getopt)
         (vec))}))  ; Because literal lists are not indexable.
@@ -332,10 +367,19 @@
   "A lip for an adapter."
   [getopt]
   (poly/tuboid
-    (vertices getopt [:lip :outside :outer])
-    (vertices getopt [:lip :outside :inner])
-    (vertices getopt [:lip :inside :outer])
-    (vertices getopt [:lip :inside :inner])))
+    (vertices getopt [:lip :outside 0])
+    (vertices getopt [:lip :outside 1])
+    (vertices getopt [:lip :inside 0])
+    (vertices getopt [:lip :inside 1])))
+
+(defn dfm-shim
+  "A shim of negative space between the lip and the adapter."
+  [getopt]
+  (poly/tuboid
+    (vertices getopt [:dfm-shim :outside 0])
+    (vertices getopt [:dfm-shim :outside 1])
+    (vertices getopt [:gabel :right 0])
+    (vertices getopt [:dfm-shim :inside 1])))
 
 (defn adapter-shell
   "An OpenSCAD polyhedron describing an adapter for the central housing.
@@ -344,10 +388,10 @@
   [getopt]
   (maybe/union
     (poly/tuboid
-      (vertices getopt [:gabel :right :outer])
-      (vertices getopt [:gabel :right :inner])
-      (vertices getopt [:adapter :outer])
-      (vertices getopt [:adapter :inner]))
+      (vertices getopt [:gabel :right 0])
+      (vertices getopt [:gabel :right 1])
+      (vertices getopt [:adapter 0])
+      (vertices getopt [:adapter 1]))
     (fastener-feature getopt adapter-side single-receiver)))
 
 (defn main-shell
@@ -356,10 +400,10 @@
   and a bottom plate at floor level."
   [getopt]
   (poly/tuboid
-    (vertices getopt [:gabel :left :outer])
-    (vertices getopt [:gabel :left :inner])
-    (vertices getopt [:gabel :right :outer])
-    (vertices getopt [:gabel :right :inner])))
+    (vertices getopt [:gabel :left 0])
+    (vertices getopt [:gabel :left 1])
+    (vertices getopt [:gabel :right 0])
+    (vertices getopt [:gabel :right 1])))
 
 (defn negatives
   "Collected negative space for the keyboard case model beyond the adapter."

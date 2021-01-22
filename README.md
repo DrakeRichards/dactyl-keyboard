@@ -1,23 +1,30 @@
-## The Dactyl-ManuForm keyboard: Opposable Thumb Edition
+## The DMOTE application
 
-This, the DMOTE, is an application for designing a keyboard that suits you. By
-editing text files of parameters, you can change:
+This is a CAD program for designing a keyboard that suits you. By editing text
+files of parameters, you can change:
 
-- Switch type: ALPS or MX.
+- Switch type: ALPS, Kailh (PG1511) or MX.
 - Microcontroller type: Lots of options.
 - Size and shape.
     - Row and column curvature and tilt (tenting).
     - Exceptions at any level, down to the position of individual keys.
 - Minor features like LED strips and wrist rests.
 
-Here’s an example of what you can do: A split-hand, concave, columnar,
-ergonomic keyboard with large thumb clusters and wrist rests.
+Here are two of the application’s bundled designs for concave, columnar,
+ergonomic keyboards, as examples of what you can do:
+
+[![Image of the first working Concertina](https://viktor.eikman.se/image/concertina-1-side-view/display)](https://viktor.eikman.se/gallery/the-concertina/)
+
+⤤ The [Concertina](https://viktor.eikman.se/article/the-concertina/), a diploid
+keyboard with 20 thumb keys and 3 assortment drawers.
 
 [![Image of the second working DMOTE](http://viktor.eikman.se/image/dmote-2-top-down-view/display)](https://viktor.eikman.se/gallery/the-dmote/)
 
+⤤ The original, split [DMOTE keyboard](http://viktor.eikman.se/article/the-dmote/),
+short for “Dactyl-ManuForm, Opposable Thumb Edition”.
+
 To get started, try the [introduction](doc/intro.md), part of the project’s
-[documentation](doc/). For a less technical, more illustrated overview, try
-[this article](http://viktor.eikman.se/article/the-dmote/).
+[documentation](doc/).
 
 ### Links
 
@@ -35,6 +42,8 @@ There’s a small family of accessory projects:
   Smooth organic topography for height maps you can use as wrist rests,
   including the example bundled in the [resource folder](resources/heightmap)
   of this project.
+* [`dmote-drawer`](https://github.com/veikman/dmote-drawer):
+  Assortment drawers for the Concertina, a bundled keyboard design.
 * [`dmote-beam`](https://github.com/veikman/dmote-beam):
   Configurable clips for stabilizing a split keyboard by holding a
   connecting rod between the two halves.
@@ -52,7 +61,7 @@ general CAD libraries for `scad-clj` have grown up around the DMOTE project.
 
 ### License
 
-Copyright © 2015-2020 Matthew Adereth, Tom Short, Viktor Eikman et al.
+Copyright © 2015–2020 Matthew Adereth, Tom Short, Viktor Eikman et al.
 
 The source code for generating the models (everything excluding the
 [things/](things/) and [resources/](resources/) directories) is distributed

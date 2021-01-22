@@ -5,29 +5,24 @@ key-clusters:
   main:
     anchoring:
       anchor: origin
+      intrinsic-rotation: [0.3, 0, 0]
       intrinsic-offset: [0, 0, 4.5]
     matrix-columns:
     - rows-above-home: 3
     - rows-above-home: 3
     - rows-above-home: 3
     aliases:
-      back: [1, last]
-      lower-left: [first, first]
-      upper-left: [first, last]
-      lower-right: [last, first]
-      mid-right: [last, 2]
       upper-right: [last, last]
 by-key:
   parameters:
     layout:
       pitch:
         intrinsic: -0.1
-        base: 0.3
     wall:
       extent: 2
       to-ground: true
-      parallel: 4
-      perpendicular: -16
+      segments:
+        "2": [0, 4, -16]
   clusters:
     main:
       columns:
@@ -35,16 +30,26 @@ by-key:
           rows:
             last:
               sides:
-                east:
+                ENE:
                   parameters:
                     wall:
                       extent: 1
+                ESE:
+                  parameters:
+                    wall:
+                      segments:
+                        "2": [-12, 0, 0]
   sides:
-    north:
+    NNE:
       parameters:
         wall:
-          parallel: 8
-          perpendicular: -2
+          segments:
+            "2": [0, 8, -2]
+    NNW:
+      parameters:
+        wall:
+          segments:
+            "2": [0, 8, -2]
 secondaries:
   back-wall:
     anchoring:

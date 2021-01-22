@@ -10,6 +10,7 @@
 
 (ns dactyl-keyboard.cad.place
   (:require [clojure.spec.alpha :as spec]
+            [clojure.core.matrix :refer [mmul]]
             [thi.ng.geom.vector :refer [vec3]]
             [thi.ng.geom.core :as geom]
             [thi.ng.math.core :as math]
@@ -24,6 +25,7 @@
             [dactyl-keyboard.compass :as compass]
             [dactyl-keyboard.cad.matrix :as matrix]
             [dactyl-keyboard.cad.misc :as misc]
+            [dactyl-keyboard.cad.key.switch :refer [resting-clearance]]
             [dactyl-keyboard.param.access
              :refer [most-specific resolve-anchor key-properties
                      salient-anchoring compensator]]
@@ -38,23 +40,30 @@
 
 ;; Key mounts.
 
+(defn- adaptive-corner-offset
+  "Locate the corner of a switch mount based on its key style."
+  [most {:keys [unit-size] :or {unit-size [1 1]}} [dx dy]]
+  (let [[subject-x subject-y] (map measure/key-length unit-size)]
+    [(* 1/2 dx subject-x) (* 1/2 dy subject-y) (/ (most :wall :thickness 2) -2)]))
+
+(defn- custom-corner-offset
+  "Locate the corner of a switch mount based on explicit plate properties."
+  [most [dx dy]]
+  (let [[sx sy sz] (most :plate :size)]
+    (mapv + [(* 1/2 dx sx) (* 1/2 dy sy) (/ sz -2)] (most :plate :position))))
+
 (defn- mount-corner-offset
   "Produce a mm coordinate offset for a corner of a switch mount.
-  This is not to be confused with offsets for walls, which are additive."
+  This is not to be confused with offsets for walls, which build out from mount
+  corners."
   [getopt cluster coord side]
-  {:pre [(or (nil? side) (side compass/all-short))]}
-  (let [specific-side (if (nil? side)
-                        :dactyl-keyboard.cad.key/any
-                        (compass/short-to-long (compass/convert-to-cardinal side)))
-        directions (get compass/keyword-to-tuple side (if side [side] []))
-        most #(most-specific getopt %& cluster coord specific-side)
-        style-data (getopt :keys :derived (most :key-style))
-        [subject-x subject-y] (map measure/key-length
-                                   (get style-data :unit-size [1 1]))
-        [wall-x wall-y wall-z] (map #(/ % 2) (most :wall :thickness))]
-    [(* (apply compass/delta-x directions) (- (/ subject-x 2) wall-x))
-     (* (apply compass/delta-y directions) (- (/ subject-y 2) wall-y))
-     (- wall-z)]))
+  {:pre [(or (nil? side) (side compass/all))]}
+  (let [most #(most-specific getopt %& cluster coord
+                             (or side :dactyl-keyboard.cad.key/any))
+        factors (misc/grid-factors side)]
+    (if (most :plate :use-key-style)
+      (adaptive-corner-offset most (getopt :keys :derived (most :key-style)) factors)
+      (custom-corner-offset most factors))))
 
 (defn- curver
   "Given an angle for progressive curvature, apply it. Else lay keys out flat."
@@ -70,11 +79,10 @@
         delta-r (delta-fn neutral index)
         angle-product (* angle-factor delta-f)
         flat-distance (* space (- index neutral))
-        key-prop (key-properties getopt cluster coord)
-        {:keys [switch-type skirt-length]} key-prop
-        radius (+ (measure/resting-clearance switch-type skirt-length)
-                  (/ (/ space 2)
-                     (Math/sin (/ angle-factor 2))))
+        radius (+ (if (most :layout :clearance :use-key-style)
+                    (resting-clearance getopt cluster coord)
+                    (most :layout :clearance :nominal))
+                  (/ (/ space 2) (Math/sin (/ angle-factor 2))))
         ortho-x (- (* delta-r (+ -1 (- (* radius (Math/sin angle-factor))))))
         ortho-z (* radius (- 1 (Math/cos angle-product)))]
    (if (zero? angle-factor)
@@ -125,49 +133,30 @@
 
 ;; Case walls extending from key mounts.
 
-(defn- wall-dimension
-  "Find the most specific wall dimension of a given type, off a given side of
-  a given key mount."
-  [getopt cluster coord side parameter]
-  (if side
-    (case (compass/classify side)
-      ::compass/cardinal
-        (most-specific
-          getopt [:wall parameter] cluster coord (side compass/short-to-long))
-      ::compass/intercardinal
-        ;; Get the mean value of two sides.
-        (/ (apply + (map #(wall-dimension getopt cluster coord % parameter)
-                         (side compass/keyword-to-tuple)))
-           2)
-      ;; Else intermediate. Recurse to treat as cardinal.
-      (wall-dimension getopt cluster coord (compass/convert-to-cardinal side) parameter))
-    0))
-
-(defn- horizontal-wall-offsets
-  "Compute horizontal offsets for one side of a specific key.
-  Return a vector of a vector of two unit deltas and one parallel wall dimension."
-  [getopt cluster coord side]
-  [(misc/grid-factors side true)
-   (wall-dimension getopt cluster coord side :parallel)])
-
-(defn- wall-segment-offset
-  "Compute a 3D offset from one corner of a switch mount to a part of its wall."
+(defn wall-segment-offset  ; Exposed for unit testing purposes only.
+  "Compute a 3D offset from one side of a switch mount to a part of its wall."
   [getopt cluster coord side segment]
-  {:post [(spec/valid? ::tarmi-core/point-3d %)]}
-  (let [unsigned (wall-dimension getopt cluster coord side :bevel)
-        [[dx dy] parallel] (horizontal-wall-offsets getopt cluster coord side)
-        perpendicular (wall-dimension getopt cluster coord side :perpendicular)
-        signed (* unsigned (if (zero? perpendicular)
-                             1
-                             (/ perpendicular (abs perpendicular))))]
-    (->
-      (case (or segment 0)
-        0 [0 0 0]
-        1 [unsigned unsigned signed]
-        2 [(+ parallel unsigned) (+ parallel unsigned) (+ perpendicular signed)]
-        [parallel parallel (+ perpendicular (* 2 signed))])
-      (update 0 (partial * dx))
-      (update 1 (partial * dy)))))
+  {:pre [(integer? segment) (not (neg? segment))]
+   :post [(spec/valid? ::tarmi-core/point-3d %)]}
+  ;; First, find an additive offset that assumes a positive xy orientation
+  ;; appropriate for the compass metaphor’s NNE side.
+  ;; Sides here have a special meaning. The NNE side, for example, is north
+  ;; from the nominal northeast corner of the key mount, not 22½° from the
+  ;; centre of the key mount.
+  ;; Second, modify the x coordinate accordingly, negating it for e.g. NNW and
+  ;; nullifying it for the cardinal direction, treating all directions as
+  ;; northerly for this purpose.
+  ;; Third, rotate the modified coordinates by matrix multiplication based on
+  ;; the closest cardinal direction, flipping x and y accordingly so that a
+  ;; user can supply a single offset that is equally useful in all directions,
+  ;; and/or fully detailed exceptions for any particular side and segment.
+  (let [most #(most-specific getopt [:wall :segments %] cluster coord side)
+        [dx _] (misc/grid-factors (compass/northern-modulus side))
+        rotation (compass/matrices (compass/convert-to-cardinal side))
+        rotate (fn [[x y z]] (conj (mmul rotation [x y]) z))]
+    (-> (apply mapv + (map most (range 0 (inc segment))))
+      (update 0 (partial * dx))  ; dy would be redundant with northern-modulus.
+      (rotate))))
 
 (defn wall-corner-offset
   "Combined [x y z] offset from the center of a switch mount.
@@ -175,17 +164,16 @@
   walling and therefore finds the base of full walls."
   [getopt cluster coordinates
    {:keys [side segment vertex] :or {vertex false} :as keyopts}]
-  {:pre [(or (nil? side) (compass/all-short side))]}
+  {:pre [(or (nil? side) (compass/all side))]}
   (mapv +
     (mount-corner-offset getopt cluster coordinates side)
-    (wall-segment-offset getopt cluster coordinates side segment)
+    (wall-segment-offset getopt cluster coordinates side (or segment 0))
     (if (and side vertex)
       ;; Compute a 3D offset from the center of a web post to a vertex on it.
       (matrix/cube-vertex-offset
         side
         (map #(/ % 2)
-             (most-specific getopt [:wall :thickness] cluster coordinates
-               (compass/short-to-long (compass/convert-to-cardinal side))))
+             (most-specific getopt [:wall :thickness] cluster coordinates side))
         keyopts)
       [0 0 0])))
 
@@ -218,7 +206,7 @@
 (defn- chousing-place
   "Place passed shape in relation to a vertex of the central housing.
   Pick the most useful precomputed 3D vertex, favouring actual vertices on
-  the body of the central housing over more ethereral vertices that are not
+  the body of the central housing over more ethereal vertices that are not
   part of the body but correspond to its outer shell."
   [getopt index part side segment subject]
   {:pre [(nat-int? index), (keyword? part), (integer? segment),
@@ -228,10 +216,9 @@
               {:configured-segment segment
                :available-segments #{0 1}})))
   (let [points (getopt :central-housing :derived :interface index :points)
-        depth-key (case segment 0 :outer, 1 :inner)
         coord (or  ; Pick the first of a number of candidates.
-               (get-in points [:above-ground part side depth-key])  ; Gabel.
-               (get-in points [:above-ground part depth-key])  ; Adapter.
+               (get-in points [:above-ground part side segment])  ; Gabel.
+               (get-in points [:above-ground part segment])  ; Adapter.
                (get-in points [:ethereal part]))]  ; Fallback even for at-ground.
     (flex/translate coord subject)))
 
@@ -292,7 +279,7 @@
   "Place in relation to the exterior of the rear housing of the main body."
   [getopt layer side segment obj]
   {:pre [(#{:interior :exterior} layer)
-         (or (nil? side) (side compass/all-short))]}
+         (or (nil? side) (side compass/all))]}
   (let [prop (partial getopt :main-body :rear-housing)]
     (flex/translate
       (mapv +
@@ -529,7 +516,7 @@
 
 (defmethod by-type ::anch/key-mount
   [getopt {:keys [cluster coordinates side segment subject] :as opts}]
-  {:pre [(or (nil? side) (compass/all-short side))]}
+  {:pre [(or (nil? side) (compass/all side))]}
   (cluster-place getopt cluster coordinates
     (if (some? side)
       ;; Corner named. By default, the target feature is the outermost wall.

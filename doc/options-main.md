@@ -2,13 +2,15 @@
 
 # General configuration options
 
-Each heading in this document represents a recognized configuration key in the main body of a YAML file for a DMOTE variant. Other documents cover special sections of this one in more detail.
+Each heading in this document represents a recognized configuration key in [YAML files for the DMOTE application](configuration.md).
+
+Other documents cover special sections of this one in more detail.
 
 ## Table of contents
 - Section <a href="#user-content-keys">`keys`</a>
     - Parameter <a href="#user-content-keys-preview">`preview`</a>
-    - Parameter <a href="#user-content-keys-styles">`styles`</a>
-- Special section <a href="#user-content-key-clusters">`key-clusters`</a>
+    - Freely keyed section <a href="#user-content-keys-styles">`styles`</a>
+- Freely keyed section <a href="#user-content-key-clusters">`key-clusters`</a>
 - Special section <a href="#user-content-by-key">`by-key`</a>
 - Parameter <a href="#user-content-secondaries">`secondaries`</a>
 - Section <a href="#user-content-main-body">`main-body`</a>
@@ -26,12 +28,13 @@ Each heading in this document represents a recognized configuration key in the m
         - Section <a href="#user-content-main-body-rear-housing-fasteners">`fasteners`</a>
             - Parameter <a href="#user-content-main-body-rear-housing-fasteners-bolt-properties">`bolt-properties`</a>
             - Parameter <a href="#user-content-main-body-rear-housing-fasteners-bosses">`bosses`</a>
-            - Section <a href="#user-content-main-body-rear-housing-fasteners-west">`west`</a>
-                - Parameter <a href="#user-content-main-body-rear-housing-fasteners-west-include">`include`</a>
-                - Parameter <a href="#user-content-main-body-rear-housing-fasteners-west-offset">`offset`</a>
-            - Section <a href="#user-content-main-body-rear-housing-fasteners-east">`east`</a>
-                - Parameter <a href="#user-content-main-body-rear-housing-fasteners-east-include">`include`</a>
-                - Parameter <a href="#user-content-main-body-rear-housing-fasteners-east-offset">`offset`</a>
+            - Section <a href="#user-content-main-body-rear-housing-fasteners-sides">`sides`</a>
+                - Section <a href="#user-content-main-body-rear-housing-fasteners-sides-W">`W`</a>
+                    - Parameter <a href="#user-content-main-body-rear-housing-fasteners-sides-W-include">`include`</a>
+                    - Parameter <a href="#user-content-main-body-rear-housing-fasteners-sides-W-offset">`offset`</a>
+                - Section <a href="#user-content-main-body-rear-housing-fasteners-sides-E">`E`</a>
+                    - Parameter <a href="#user-content-main-body-rear-housing-fasteners-sides-E-include">`include`</a>
+                    - Parameter <a href="#user-content-main-body-rear-housing-fasteners-sides-E-offset">`offset`</a>
     - Section <a href="#user-content-main-body-back-plate">`back-plate`</a>
         - Parameter <a href="#user-content-main-body-back-plate-include">`include`</a>
         - Parameter <a href="#user-content-main-body-back-plate-beam-height">`beam-height`</a>
@@ -67,9 +70,9 @@ Each heading in this document represents a recognized configuration key in the m
         - Parameter <a href="#user-content-main-body-leds-emitter-diameter">`emitter-diameter`</a>
         - Parameter <a href="#user-content-main-body-leds-interval">`interval`</a>
 - Section <a href="#user-content-central-housing">`central-housing`</a>
-- Special section <a href="#user-content-custom-bodies">`custom-bodies`</a>
-- Special section <a href="#user-content-flanges">`flanges`</a>
-- Special section <a href="#user-content-tweaks">`tweaks`</a>
+- Freely keyed section <a href="#user-content-custom-bodies">`custom-bodies`</a>
+- Freely keyed section <a href="#user-content-flanges">`flanges`</a>
+- Freely keyed section <a href="#user-content-tweaks">`tweaks`</a>
 - Section <a href="#user-content-mcu">`mcu`</a>
     - Parameter <a href="#user-content-mcu-include">`include`</a>
     - Parameter <a href="#user-content-mcu-preview">`preview`</a>
@@ -83,11 +86,11 @@ Each heading in this document represents a recognized configuration key in the m
             - Parameter <a href="#user-content-mcu-support-shelf-extra-space">`extra-space`</a>
             - Parameter <a href="#user-content-mcu-support-shelf-thickness">`thickness`</a>
             - Parameter <a href="#user-content-mcu-support-shelf-bevel">`bevel`</a>
-            - Section <a href="#user-content-mcu-support-shelf-sides">`sides`</a>
-                - Parameter <a href="#user-content-mcu-support-shelf-sides-lateral-thickness">`lateral-thickness`</a>
-                - Parameter <a href="#user-content-mcu-support-shelf-sides-overhang-thickness">`overhang-thickness`</a>
-                - Parameter <a href="#user-content-mcu-support-shelf-sides-overhang-width">`overhang-width`</a>
-                - Parameter <a href="#user-content-mcu-support-shelf-sides-offsets">`offsets`</a>
+            - Section <a href="#user-content-mcu-support-shelf-rim">`rim`</a>
+                - Parameter <a href="#user-content-mcu-support-shelf-rim-lateral-thickness">`lateral-thickness`</a>
+                - Parameter <a href="#user-content-mcu-support-shelf-rim-overhang-thickness">`overhang-thickness`</a>
+                - Parameter <a href="#user-content-mcu-support-shelf-rim-overhang-width">`overhang-width`</a>
+                - Parameter <a href="#user-content-mcu-support-shelf-rim-offsets">`offsets`</a>
         - Section <a href="#user-content-mcu-support-lock">`lock`</a>
             - Parameter <a href="#user-content-mcu-support-lock-include">`include`</a>
             - Parameter <a href="#user-content-mcu-support-lock-width-factor">`width-factor`</a>
@@ -104,7 +107,7 @@ Each heading in this document represents a recognized configuration key in the m
                 - Parameter <a href="#user-content-mcu-support-lock-bolt-overshoot">`overshoot`</a>
                 - Parameter <a href="#user-content-mcu-support-lock-bolt-mount-length">`mount-length`</a>
                 - Parameter <a href="#user-content-mcu-support-lock-bolt-mount-thickness">`mount-thickness`</a>
-- Special section <a href="#user-content-ports">`ports`</a>
+- Freely keyed section <a href="#user-content-ports">`ports`</a>
 - Section <a href="#user-content-wrist-rest">`wrist-rest`</a>
     - Parameter <a href="#user-content-wrist-rest-include">`include`</a>
     - Parameter <a href="#user-content-wrist-rest-style">`style`</a>
@@ -167,15 +170,21 @@ Keys, that is keycaps and electrical switches, are not the main focus of this ap
 
 If `true`, include models of the keycaps in place on the keyboard. This is intended for illustration as you work on a design, not for printing.
 
-### Parameter <a id="keys-styles">`styles`</a>
+### Freely keyed section <a id="keys-styles">`styles`</a>
 
-Here you name all the styles of keys on the keyboard and describe each style using parameters to the `keycap` function of the [`dmote-keycap`](https://github.com/veikman/dmote-keycap) library. Switch type is one aspect of key style.
+Here you name all the styles of keys on the keyboard and describe each style using parameters to the `keycap` function of the [`dmote-keycap`](https://github.com/veikman/dmote-keycap) library.
 
-These key styles determine the size of key mounting plates on the keyboard and what kind of holes are cut into those plates for the switches to fit inside. Negative space is also reserved above the plate for the movement of the keycap: A function of switch height, switch travel, and keycap shape. In addition, if the keyboard is curved, key styles help determine the spacing between key mounts.
+Key styles determine the size of key mounting plates on the keyboard and what kind of holes are cut into those plates for the switches to fit inside. Negative space is also reserved above the plate for the movement of the keycap: A function of switch height, switch travel, and keycap shape.
+
+`switch-type`, where you name a type of electromechanical switch, is one aspect of key style. The DMOTE application supports a superset of `dmote-keycap`’s switch types, because the added types differ only in the shape of the hole that goes through the mounting plate: Differences which are irrelevant to keycaps. The following options are thus recognized for `switch-type` in a key style:
+
+* `alps`: ALPS-style, including Matias.
+* `kailh-pg1511`: Cherry MX style except that there are no recesses in the lower body of the switch; this is true of Kailh PG1511 series switches, including KT and KS sub-series.
+* `mx`: Full Cherry MX style with lateral recesses in the lower body of the switch.
 
 In options by key, documented [here](options-nested.md), you specify which style of key is used for each position on the keyboard.
 
-## Special section <a id="key-clusters">`key-clusters`</a>
+## Freely keyed section <a id="key-clusters">`key-clusters`</a>
 
 This section describes the general size, shape and position of the clusters of keys on the keyboard, each in its own subsection. It is documented in detail [here](options-clusters.md).
 
@@ -276,29 +285,29 @@ Default values provided by the application are bare minima. More usefully, the a
 
 If `true`, add nut bosses to the ceiling of the rear housing for each fastener. Space permitting, these bosses will have some play on the north-south axis, to permit adjustment of the angle of the keyboard halves under a stabilizer.
 
-##### Section <a id="main-body-rear-housing-fasteners-west">`west`</a>
+##### Section <a id="main-body-rear-housing-fasteners-sides">`sides`</a>
 
-A fastener on the inward-facing end of the rear housing.
+Analogous but independent parameters for the west and east sides.
 
-###### Parameter <a id="main-body-rear-housing-fasteners-west-include">`include`</a>
+###### Section <a id="main-body-rear-housing-fasteners-sides-W">`W`</a>
+
+The west: A fastener on the inward-facing end of the rear housing.
+
+###### Parameter <a id="main-body-rear-housing-fasteners-sides-W-include">`include`</a> at level 7
 
 If `true`, include this fastener.
 
-###### Parameter <a id="main-body-rear-housing-fasteners-west-offset">`offset`</a>
+###### Parameter <a id="main-body-rear-housing-fasteners-sides-W-offset">`offset`</a> at level 7
 
 A one-dimensional offset in mm from the inward edge of the rear housing to the fastener. You probably want a negative number if any.
 
-##### Section <a id="main-body-rear-housing-fasteners-east">`east`</a>
+###### Section <a id="main-body-rear-housing-fasteners-sides-E">`E`</a>
 
-A fastener on the outward-facing end of the rear housing. All parameters are analogous to those for `west`.
+The east: A fastener on the outward-facing end of the rear housing.
 
-###### Parameter <a id="main-body-rear-housing-fasteners-east-include">`include`</a>
+###### Parameter <a id="main-body-rear-housing-fasteners-sides-E-include">`include`</a> at level 7
 
-
-
-###### Parameter <a id="main-body-rear-housing-fasteners-east-offset">`offset`</a>
-
-
+###### Parameter <a id="main-body-rear-housing-fasteners-sides-E-offset">`offset`</a> at level 7
 
 ### Section <a id="main-body-back-plate">`back-plate`</a>
 
@@ -366,7 +375,9 @@ Preview mode. If `true`, put a model of the plate in the same file as the case i
 
 #### Parameter <a id="main-body-bottom-plate-combine">`combine`</a>
 
-If `true`, combine wrist rests for the case and the bottom plate into a single model, when both are enabled. This is typically used with the `solid` style of wrest rest.
+If `true`, combine bottom plates for the main body, the central housing and the wrist rests, where possible.
+
+This can be used with the `solid` style of wrist rest to get a plate that helps lock the wrist rest to the main body, and with a central housing to get a single, bilateral plate that extends from side to side. This larger plate can require a large build volume.
 
 #### Parameter <a id="main-body-bottom-plate-thickness">`thickness`</a>
 
@@ -432,6 +443,8 @@ The following describes only a subset of what you can include here:
 
 Default values provided by the application are bare minima. More usefully, the application injects DFM functions and flags negative space for specific uses.
 
+The optional `channel-length` property has a special side effect in this context. With a channel length of zero (the default), bolts start from the floor beneath the bottom plate. A positive channel length raises each bolt up into the plate. This is useful mainly with very thick plates. Cf. `dfm` → `bottom-plate` → `fastener-plate-offset`.
+
 ###### Parameter <a id="main-body-bottom-plate-installation-fasteners-positions">`positions`</a>
 
 A list of places where threaded fasteners will connect the bottom plate to the rest of the case.
@@ -474,7 +487,7 @@ The distance between LEDs on the strip. You may want to apply a setting slightly
 
 A major body separate from the main body, located in between and connecting the two halves of a reflected main body. The central housing is documented in detail [here](options-central.md).
 
-## Special section <a id="custom-bodies">`custom-bodies`</a>
+## Freely keyed section <a id="custom-bodies">`custom-bodies`</a>
 
 Bodies in addition to those predefined by the application.
 
@@ -507,7 +520,7 @@ In `cut` nodes, the `positive` parameter is ignored, as is `body`. Neither `at-g
 
 If its parent body is governed by `reflect`, the custom body will also be reflected, appearing in left- and right-hand versions.
 
-## Special section <a id="flanges">`flanges`</a>
+## Freely keyed section <a id="flanges">`flanges`</a>
 
 Extra screws.
 
@@ -525,7 +538,7 @@ Each item in the list of `positions`, in turn, has the following structure:
 - `body` (optional): A code identifying the predefined [body](configuration.md) that contains the screw, before the effect of any custom bodies.
 - `anchoring` (optional): Room for standard anchoring parameters. The concept of anchoring is explained [here](options-anchoring.md), along with the parameters available in this section.
 
-## Special section <a id="tweaks">`tweaks`</a>
+## Freely keyed section <a id="tweaks">`tweaks`</a>
 
 Additional shapes. This parameter is usually needed to bridge gaps between the walls of key clusters. The expected value here is a map of [arbitrary shapes](options-arbitrary-shapes.md).
 
@@ -535,12 +548,12 @@ In the following example, `A` and `B` are key aliases that would be defined else
   bridge-between-A-and-B:
     - chunk-size: 2
       hull-around:
-      - [A, SSE, 0]
-      - [B, NNE, 0]
+      - [A, SE]
+      - [B, NE]
       - [A, SSW, 0, 3]
 ```
 
-The example is interpreted to mean that a plate should be created stretching from the south-by-southeast corner of `A` to the north-by-northeast corner of `B`. Due to `chunk-size` 2, that first plate will be joined to, but not fully hulled with, a second plate from `B` back to a different corner of `A`, with a longer stretch of (all) wall segments running down the corner of `A`.
+The example is interpreted to mean that a plate should be created stretching from the southeast corner of `A` to the northeast corner of `B`. Due to `chunk-size` 2, that first plate will be joined to, but not fully hulled with, a second plate from `B` back to a different corner of `A`, with a longer stretch of wall segments (0 through 3 inclusive) running down the south-by-southwest corner of `A`.
 
 In `tweaks` nodes, the `body` setting is meaningful, but should not refer to a custom body, because the shape of a custom body is always fully determined by its parent body and its cut. Tweaks are not applied to custom bodies as such.
 
@@ -617,25 +630,25 @@ The thickness of material in the shelf, below or behind the PCBA, in mm.
 
 ##### Parameter <a id="mcu-support-shelf-bevel">`bevel`</a>
 
-A map of angles, in radians, indexed by cardinal compass points, whereby any and all sides of the shelf are turned away from the MCU PCBA. This feature is intended mainly for manufacturability, to reduce the need for supports in printing, but it can also add strength or help connect to other features.
+A map of cardinal compass points to angles in radians, whereby any and all sides of the shelf are turned away from the MCU PCBA. This feature is intended mainly for manufacturability, to reduce the need for supports in printing, but it can also add strength or help connect to other features.
 
-##### Section <a id="mcu-support-shelf-sides">`sides`</a>
+##### Section <a id="mcu-support-shelf-rim">`rim`</a>
 
-By default, a shelf includes raised sides to hold on to the PCBA. This is most useful when the shelf is rotated, following the MCU, out of the xy plane.
+By default, a shelf includes raised edges to hold on to the PCBA. This is most useful when the shelf is rotated, following the MCU, out of the xy-plane.
 
-###### Parameter <a id="mcu-support-shelf-sides-lateral-thickness">`lateral-thickness`</a>
+###### Parameter <a id="mcu-support-shelf-rim-lateral-thickness">`lateral-thickness`</a>
 
 The thickness of material to each side of the MCU, in mm.
 
-###### Parameter <a id="mcu-support-shelf-sides-overhang-thickness">`overhang-thickness`</a>
+###### Parameter <a id="mcu-support-shelf-rim-overhang-thickness">`overhang-thickness`</a>
 
 The thickness of material in the outermost part on each side, in mm.
 
-###### Parameter <a id="mcu-support-shelf-sides-overhang-width">`overhang-width`</a>
+###### Parameter <a id="mcu-support-shelf-rim-overhang-width">`overhang-width`</a>
 
 The extent to which each side extends out across the PCBA, in mm.
 
-###### Parameter <a id="mcu-support-shelf-sides-offsets">`offsets`</a>
+###### Parameter <a id="mcu-support-shelf-rim-offsets">`offsets`</a>
 
 One or two lengthwise offsets in mm. When these are left at zero, the sides of the shelf will appear in full. A negative or positive offset shortens the corresponding side, towards or away from the connector side of the PCBA.
 
@@ -718,7 +731,7 @@ The length of the base containing a threaded channel used to secure the bolt ove
 
 The thickness of the mount. This should have some rough correspondence to the threaded portion of your fastener, which should not have a shank.
 
-## Special section <a id="ports">`ports`</a>
+## Freely keyed section <a id="ports">`ports`</a>
 
 This section describes ports, including sockets in the case walls to contain electronic receptacles for signalling connections and other interfaces. Each port gets its own subsection. Ports are documented in detail [here](options-ports.md).
 

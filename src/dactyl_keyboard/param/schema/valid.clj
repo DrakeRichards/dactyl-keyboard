@@ -10,7 +10,9 @@
   (:require [clojure.spec.alpha :as spec]
             [scad-tarmi.core :as tarmi]
             [scad-klupe.iso :refer [head-length]]
-            [dactyl-keyboard.compass :as compass]))
+            [dmote-keycap.schema :as capschema]
+            [dactyl-keyboard.compass :as compass]
+            [dactyl-keyboard.cots :as cots]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -27,6 +29,10 @@
     (fn [{:keys [m-diameter head-type] :as parameters}]
       (spec/valid? :scad-klupe.schema.base/bolt-length-parameters
         (assoc parameters :head-length (head-length m-diameter head-type))))))
+
+(spec/def ::switch-type (set (keys cots/switch-facts)))
+(spec/def ::comprehensive-key-style
+  (spec/and ::capschema/base-parameters (spec/keys :opt-un [::switch-type])))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -59,7 +65,6 @@
 (spec/def ::above-ground boolean?)
 (spec/def :three/intrinsic-rotation ::tarmi/point-3d)
 
-(spec/def :central/offset ::tarmi/point-3d)
 (spec/def :central/left-hand-alias ::alias)
 (spec/def :central/right-hand-alias ::alias)
 (spec/def :central/starting-point keyword?)
@@ -71,10 +76,11 @@
 (spec/def :intermediate/side compass/intermediates)
 ;; TODO: Make sure the various placement functions affected by flexible/side
 ;; can actually take all directions, by lossy approximation where necessary.
-(spec/def :flexible/side compass/all-short)
+(spec/def :flexible/side compass/all)
 (spec/def :two/offset ::tarmi/point-2d)
 (spec/def :three/offset ::tarmi/point-3d)
 (spec/def :three/override (spec/coll-of (spec/nilable number?) :count 3))
+(spec/def :three/segments (spec/map-of integer? ::tarmi/point-3d))
 (spec/def :flexible/offset ::tarmi/point-2-3d)
 
 
@@ -90,10 +96,10 @@
 (spec/def ::nameable-spline (spec/coll-of ::spline-point))
 
 (spec/def :central/base
-  (spec/keys :req-un [:central/offset]
+  (spec/keys :req-un [:three/offset]
              :opt-un [:central/left-hand-alias :central/right-hand-alias]))
 (spec/def :central/adapter
-  (spec/keys :opt-un [:central/offset ::alias]))
+  (spec/keys :opt-un [:three/segments ::alias]))
 (spec/def :central/interface-node
   (spec/keys :req-un [:central/base]
              :opt-un [:central/adapter ::at-ground ::above-ground]))

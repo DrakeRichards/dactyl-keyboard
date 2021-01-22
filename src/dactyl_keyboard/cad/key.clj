@@ -13,9 +13,33 @@
             [dactyl-keyboard.cad.matrix :as matrix]
             [dactyl-keyboard.cad.place :as place]
             [dactyl-keyboard.cad.key.switch :refer [cap-channel-negative
-                                                    cap-positive]]
+                                                    cap-positive
+                                                    switch-for-cap]]
             [dactyl-keyboard.param.access :refer [most-specific key-properties
                                                   compensator]]))
+
+
+;;;;;;;;;;;;;;
+;; Internal ;;
+;;;;;;;;;;;;;;
+
+(defn adaptive-plate
+  "The shape of a key mounting plate based on the style of the key."
+  [getopt cluster coord]
+  (let [most #(most-specific getopt % cluster coord)
+        style-data (getopt :keys :derived (most [:key-style]))
+        [x y] (map measure/key-length (get style-data :unit-size [1 1]))
+        z (most [:wall :thickness 2])]
+    (model/translate [0 0 (/ z -2)]
+      (model/cube x y z))))
+
+(defn custom-plate
+  "The shape of a key mounting plate not based on the style of the key."
+  [getopt cluster coord]
+  (let [most #(most-specific getopt [:plate %] cluster coord)
+        [x y z] (most :size)]
+    (model/translate (mapv + [0 0 (/ z -2)] (most :position))
+      (model/cube x y z))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -87,23 +111,28 @@
   "Derive properties for each key style.
   These properties include DFM settings from other sections of the
   configuration, used here with their dmote-keycap names, and strings for
-  OpenSCAD module names."
+  OpenSCAD module names. The switch type named in the user’s configuration
+  is also simplified for dmote-keycap (as :switch-type) and preserved for
+  shaping the mount (as :mount-type)."
   [getopt]
   (reduce
     (fn [coll [style-key explicit]]
       (let [safe-get #(get explicit %1 (%1 capdata/option-defaults))
-            switch-type (safe-get :switch-type)]
+            mount-type (safe-get :switch-type)
+            cap-compatible-type (switch-for-cap mount-type)]
         (assoc coll style-key
           (merge
             capdata/option-defaults
             {:module-keycap (str "keycap_" (misc/key-to-scadstr style-key))
-             :module-switch (str "switch_" (misc/key-to-scadstr switch-type))
-             :skirt-length (measure/default-skirt-length switch-type)
-             :vertical-offset (measure/plate-to-stem-end switch-type)
+             :module-switch (str "switch_" (misc/key-to-scadstr mount-type))
+             :skirt-length (measure/default-skirt-length cap-compatible-type)
+             :vertical-offset (measure/plate-to-stem-end cap-compatible-type)
              :error-stem-positive (getopt :dfm :keycaps :error-stem-positive)
              :error-stem-negative (getopt :dfm :keycaps :error-stem-negative)
              :error-body-positive (getopt :dfm :error-general)}
-            explicit))))
+            explicit
+            {:mount-type mount-type
+             :switch-type cap-compatible-type}))))
     {}
     (getopt :keys :styles)))
 
@@ -232,12 +261,9 @@
 (defn single-plate
   "The shape of a key mounting plate."
   [getopt cluster coord]
-  (let [most #(most-specific getopt % cluster coord)
-        style-data (getopt :keys :derived (most [:key-style]))
-        [x y] (map measure/key-length (get style-data :unit-size [1 1]))
-        z (most [:wall :thickness 2])]
-    (model/translate [0 0 (/ z -2)]
-      (model/cube x y z))))
+  (if (most-specific getopt [:plate :use-key-style] cluster coord)
+    (adaptive-plate getopt cluster coord)
+    (custom-plate getopt cluster coord)))
 
 (defn cluster-plates [getopt cluster]
   (apply model/union
