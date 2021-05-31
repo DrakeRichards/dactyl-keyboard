@@ -40,7 +40,7 @@ key-clusters:
   thumb:
     anchoring:
       anchor: iHome
-      intrinsic-rotation: [0, -1.4, 0.20]
+      intrinsic-rotation: [0, -1.2, 0.40]
       extrinsic-offset: [-30, -40, -10]
       preserve-orientation: true
     matrix-columns:
@@ -317,7 +317,7 @@ by-key:
           parameters:
             layout:
               pitch:
-                base: 0.2
+                base: 0.1
                 progressive: 0.3
               yaw:
                 base: 0.05
@@ -371,7 +371,7 @@ by-key:
           parameters:
             layout:
               pitch:
-                base: 0.2
+                base: 0.1
                 progressive: 0.3
               yaw:
                 base: -0.05
