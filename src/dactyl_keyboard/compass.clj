@@ -17,36 +17,34 @@
   [:N :NNE :NE :ENE :E :ESE :SE :SSE :S :SSW :SW :WSW :W :WNW :NW :NNW])
 (def n-divisions (count directions))
 
-(def long-to-short
-  "Longer names are used for cardinal directions in the configuration layer."
-  {:north :N
-   :east  :E
-   :south :S
-   :west  :W})
+(def radians
+  "A map of compass points to angles in radians, for counterclockwise rotation.
+  This represents a somewhat literal interpretation of the compass metaphor
+  and is not the only interpretation used in the application."
+  (into {} (map-indexed (fn [i d] [d (- (/ (* i τ) n-divisions))]) directions)))
 
-(let [short (into {} (map-indexed
-                       (fn [i d] [d (/ (* i τ) n-divisions)])
-                       directions))]
-  (def radians
-    "A map of compass points, including long and short names, to radians.
-    This represents a somewhat literal interpretation of the compass metaphor
-    and is not the only interpretation used in the application."
-    (merge short
-           (into {} (map (fn [[k v]] [k (v short)]) long-to-short)))))
+(def matrices
+  "2x2 matrices for rotating cleanly in the cardinal directions.
+  This is for use where the radians computed above are too lossy as a result of
+  floating-point arithmetic, for e.g. unit testing purposes."
+  {:N [[1 0] [0 1]]
+   :E [[0 1] [-1 0]]
+   :S [[-1 0] [0 -1]]
+   :W [[0 -1] [1 0]]})
 
 (defn- select-length [n] (set (filter #(= (count (name %)) n) directions)))
 
 (def cardinals (select-length 1))       ; North, south, etc. 4 directions.
 (def intercardinals (select-length 2))  ; Northeast, southeast, etc. Also 4.
 (def intermediates (select-length 3))   ; North-by-northeast etc. 8 directions.
-(def all-short (union cardinals intercardinals intermediates))  ; 16 directions.
+(def all (union cardinals intercardinals intermediates))  ; 16 directions.
 (def nonintermediates (union cardinals intercardinals))  ; 8 directions.
 (def noncardinals (union intercardinals intermediates))  ; 12 directions.
 
 (defn classify
   "Classify a specific direction. Return a namespaced keyword."
   [direction]
-  {:pre [(direction all-short)]}
+  {:pre [(direction all)]}
   (cond
     (direction cardinals) ::cardinal
     (direction intercardinals) ::intercardinal
@@ -85,15 +83,10 @@
 (def noncardinal-to-tuple
   (merge intercardinal-to-tuple intermediate-to-tuple))
 
-(let [base (map-invert long-to-short)]
-  (def short-to-long
-    (merge base (into {} (map (fn [[k [v0 _]]] [k (v0 base)])
-                              noncardinal-to-tuple)))))
-
 (defn convert-to-cardinal
   "Take a compass-point keyword. Return the nearest cardinal direction."
   [direction]
-  {:pre [(all-short direction)] :post [(% cardinals)]}
+  {:pre [(all direction)] :post [(% cardinals)]}
   (if-let [tuple (get noncardinal-to-tuple direction)]
     (first tuple)
     direction))
@@ -105,22 +98,30 @@
   (get intermediate-to-intercardinal direction direction))
 
 (defn convert-to-nonintermediate
-  "Take any short compass keyword. Return the nearest nonintermediate direction."
+  "Take a compass-point keyword. Return the nearest nonintermediate direction."
   [direction]
-  {:pre [(all-short direction)] :post [(% nonintermediates)]}
+  {:pre [(all direction)] :post [(% nonintermediates)]}
   (if (intermediates direction)
     (convert-to-intercardinal direction)
     direction))
 
-(defn convert-to-any-short
-  "Accept a long or short keyword for any compass point. Return a short form."
-  [direction]
-  {:post [(% all-short)]}
-  (get long-to-short direction direction))
-
 (def keyword-to-tuple (merge intercardinal-to-tuple intermediate-to-tuple))
 
 (def tuples (set (vals intermediate-to-tuple))) ; All 2-tuples of cardinals.
+
+(let [n-quadrants 4  ; These are τ/4-radian fields, not coordinate quadrants.
+      overflow (dec n-quadrants)
+      quadrant-size (/ n-divisions n-quadrants)
+      left-bound (dec n-divisions)]
+  (defn northern-modulus
+    "Shift any direction into its equivalent for the first cardinal.
+    Any cardinal direction becomes north; any other direction becomes something
+    closer to north than to other cardinals."
+    [starting-direction]
+    (let [m (mod (.indexOf directions starting-direction) quadrant-size)]
+      ;; Treat e.g. ENE (index 3) as NNW (index 15) on a 16-wind compass.
+      ;; Otherwise use the modulus as is.
+      (get directions (if (= m overflow) left-bound m)))))
 
 (defn- turn
   "Retrieve a direction keyword for turning clockwise."
@@ -151,7 +152,7 @@
     ([direction]
      (to-grid direction false))
     ([direction box]
-     {:pre [(direction all-short)] :post [(vector? %) (= (count %) 2)]}
+     {:pre [(direction all)] :post [(vector? %) (= (count %) 2)]}
      (if (and box (direction intermediates))
        (to-grid (convert-to-cardinal direction) false)
        (direction store)))

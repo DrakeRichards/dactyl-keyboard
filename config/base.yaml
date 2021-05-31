@@ -1,5 +1,5 @@
 # Bundled non-neutral basic model build parameters.
-# These should be pretty safe to use with any variant and are easy to override.
+# These should be pretty safe to use with any keyboard design and are easy to override.
 
 keys:
   styles:
@@ -10,13 +10,20 @@ keys:
       top-size: [12.7, 12.7, 3.3]
 by-key:
   parameters:
+    plate:
+      use-key-style: true
+    layout:
+      clearance:
+        nominal: 8  # Approximate DSA cap height above plate.
     channel:
       height: 20
       top-width: 10
     wall:
       thickness: 2
-      bevel: 1
-      perpendicular: -8
+      segments:
+        "1": [0,  1, -1]  # Top bevel.
+        "2": [0,  0, -8]  # Perpendicular wall.
+        "3": [0, -1, -1]  # Bottom bevel.
 main-body:
   rear-housing:
     thickness:
@@ -30,29 +37,32 @@ main-body:
       bolt-properties:
         m-diameter: 4
         head-type: countersunk
+        include-threading: false
   bottom-plate:
     installation:
       thickness: 2.5
       fasteners:
         bolt-properties:
-          m-diameter: 4
+          m-diameter: 3
           head-type: countersunk
           point-type: cone  # Design for manufacturing: Easy printing.
           total-length: 8.5
+          include-threading: false
 central-housing:
   adapter:
     fasteners:
       bolt-properties:
-        m-diameter: 4
+        m-diameter: 3
         head-type: countersunk
         total-length: 8.5
+        include-threading: false
 mcu:
   type: promicro
   support:
     lock:
       width-factor: 0.45
       fastener-properties:
-        m-diameter: 4
+        m-diameter: 3
         head-type: countersunk
       plate:
         clearance: 0.9
@@ -68,4 +78,4 @@ resolution:
 dfm:
   error-general: -0.5
   bottom-plate:
-    fastener-plate-offset: -0.5
+    fastener-plate-offset: -0.1

@@ -118,12 +118,14 @@
   Written for use as an OpenSCAD module."
   [getopt]
   (let [prop (partial getopt :main-body :bottom-plate :installation)
-        bolt-prop (prop :fasteners :bolt-properties)]
-    (model/rotate [π 0 0]
-      (merge-bolt
-       {:compensator (compensator getopt), :negative true}
-       bolt-prop
-       (when (prop :inserts :include) {:include-threading false})))))
+        bolt-prop (prop :fasteners :bolt-properties)
+        channel-length (:channel-length bolt-prop 0)]
+    (->> (merge-bolt
+           {:compensator (compensator getopt), :negative true}
+           bolt-prop
+           (when (prop :inserts :include) {:include-threading false}))
+      (model/rotate [π 0 0])
+      (maybe/translate [0 0 channel-length]))))
 
 (defn insert-negative
   "The shape of a heat-set insert for a screw."
@@ -228,9 +230,9 @@
 (def holes-in-main-body (fastener-fn 3 (any-type ::main ::centre)))
 (def holes-in-main-plate (fastener-fn 3 (any-type ::main ::centre) true))
 (def holes-in-left-housing-body (fastener-fn 3 (any-type ::centre) false true))
-(def holes-in-left-housing-plate (fastener-fn 3 (any-type ::centre) true true))
 (def holes-in-wrist-body (fastener-fn 3 (any-type ::wrist)))
 (def holes-in-wrist-plate (fastener-fn 3 (any-type ::wrist) true))
+(def lateral-holes (fastener-fn 3 (any-type ::main ::centre ::wrist) true))
 (def inserts (fastener-fn 4))
 
 
@@ -250,13 +252,12 @@
   (xy-coordinate pair) for the exterior wall of the case extending from
   that key mount."
   [getopt cluster]
-  (fn [[coord [cardinal :as side-tuple]]]
-    (let [most #(most-specific getopt [:wall %] cluster coord
-                               (compass/short-to-long cardinal))]
+  (fn [[coord side-tuple]]
+    (let [side (compass/tuple-to-intermediate side-tuple)
+          most #(most-specific getopt [:wall %] cluster coord side)]
       (when (most :to-ground)
         (take 2 (place/wall-corner-place getopt cluster coord
-                  {:side (compass/tuple-to-intermediate side-tuple)
-                   :segment (most :extent), :vertex true}))))))
+                  {:side side, :segment (most :extent), :vertex true}))))))
 
 (defn- cluster-floor-polygon
   "A polygon approximating a floor-level projection of a key clusters’s wall."
@@ -305,7 +306,7 @@
   [getopt]
   (maybe/union
     (key/metacluster cluster-floor-polygon getopt)
-    (mask/at-ground getopt (posts-for-main-plate getopt))
+    (mask/at-ground getopt (filter some? (posts-for-main-plate getopt)))
     (tweak/floor-polygons getopt)
     (when (getopt :central-housing :derived :include-main)
       (chousing-floor-polygon getopt))
@@ -342,13 +343,12 @@
     (to-3d getopt (case-positive-2d getopt))))
 
 (defn case-complete
-  "A printable model of a case bottom plate in one piece."
+  "A printable model of a case’s bottom plate in one piece."
   [getopt]
   (model/color (:bottom-plate colours)
     (maybe/difference
       (case-positive getopt)
-      (holes-in-main-plate getopt)
-      (holes-in-left-housing-plate getopt))))
+      (lateral-holes getopt))))  ; May be overkill.
 
 
 ;;;;;;;;;;;;;;;;;
@@ -374,29 +374,46 @@
       (holes-in-wrist-plate getopt))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Combined Case and Wrist-Rest Plates ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;
+;; Combined Plates ;;
+;;;;;;;;;;;;;;;;;;;;;
 
-(defn combined-positive
-  "A combined bottom plate for case and wrist rest.
-  This assumes the use of a threaded-style wrist rest, but will obviously
-  prevent the use of threaded fasteners in adjusting the wrist rest.
-  This is therefore recommended only where there is no space available between
-  case and wrist rest."
+(defn- lateral-positive
+  "A combined bottom plate for everything but the central housing.
+  Where a wrist rest is included, this function assumes the use of a solid or
+  threaded wrist rest and will attach its bottom plate to the main body’s.
+  Where plates abut or overlap, this will obviously prevent the use of threaded
+  fasteners in adjusting the wrist rest."
   [getopt]
   (model/union
     (wall-base-3d getopt)
     (to-3d getopt
-      (model/union
+      (maybe/union
         (case-positive-2d getopt)
-        (wrist/hulled-block-pairs getopt)
-        (wrist-positive-2d getopt)))))
+        (when (and (getopt :wrist-rest :include)
+                   (getopt :wrist-rest :bottom-plate :include))
+          (wrist/hulled-block-pairs getopt)
+          (wrist-positive-2d getopt))))))
+
+(defn- bilateral
+  "Fit passed shape onto both sides of a central housing, if any."
+  [getopt shape]
+  (maybe/union
+    shape
+    (when (getopt :central-housing :derived :include-main)
+      (model/mirror [-1 0 0] shape))))
+
+(defn combined-positive
+  "The positive space of a combined bottom plate: One plate that extends to
+  cover the central housing, if that’s included, and/or the wrist rests, if
+  they’re included."
+  [getopt]
+  (bilateral getopt (lateral-positive getopt)))
 
 (defn combined-complete
+  "A combined plate with holes."
   [getopt]
   (model/color (:bottom-plate colours)
     (maybe/difference
       (combined-positive getopt)
-      (holes-in-main-plate getopt)
-      (holes-in-wrist-plate getopt))))
+      (bilateral getopt (lateral-holes getopt)))))

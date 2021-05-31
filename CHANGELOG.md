@@ -5,6 +5,76 @@ version 0.2.0, thus covering only a fraction of the project’s history.
 
 ## [Unreleased]
 ### Changed
+- Switched the default build target (with GNU Make) from the DMOTE to the
+  Dactyl-ManuForm.
+- Replaced the way that key-cluster walls are measured. Instead of separate
+  settings for `bevel`, `parallel` and `perpendicular`, there is now only
+  one setting, called `segments`, with more power.
+- Completed migration from long-form names for the points of the compass,
+  like `north`, to short-form names, like `N`. This leaves only short forms,
+  so the distinction itself is abolished.
+    - The shorter names are now used for nested configuration by key.
+    - The shorter names are used for fasteners through the rear housing,
+      under a new section (`sides`).
+    - The longer names, previously optional for MCU shelf sides, are no
+      longer permitted there.
+- Disabled responsiveness to predicted resting key clearance by default.
+  This can be re-enabled with a new parameter (`use-key-style`).
+- Moved and replaced some (other) parameters:
+    - Made the `central-housing` → `adapter` → `receivers` → `thickness` →
+      `bridge` parameter a section, with its function inherited by `tangential`
+      in that new section.
+    - Renamed MCU shelf `sides` to `rim` to prevent confusion with the
+      adjacent `bevel` section of parameters, which is indexed by sides
+      (compass points).
+    - Replaced central-housing interface settings for `adapter` → `offset`
+      with a `segments` map, as for key-cluster walls.
+- Dropped support for arbitrary YAML inclusions through GNU Make.
+- Bundled designs:
+    - Stopped including threading on bolts in most models, for faster renders
+      and reduced sensitivity to printer accuracy.
+    - Slightly thicker bottom plate on DMOTE.
+    - M3 screws instead of M4 in `config/base.yaml`.
+    - Concertina:
+        - Improved USB B port and MCU shelf.
+        - More tactile thumb clusters.
+        - Pinky-finger keys closer.
+        - Deeper, fewer holes through bottom plate.
+
+### New
+- Added support for Kailh’s PG1511 series switches and similar MX clones
+  without lateral recesses in the lower body.
+- Added a nominal clearance parameter to make it easier to design for multiple
+  different types of switches and keycaps.
+- Added support for custom key mounting plate size.
+- Extended the concept of a combined bottom plate to include the central
+  housing.
+- Added a side effect of `channel-length` to bottom-plate fasteners, allowing
+  them to rise from the floor.
+- Added a parameter for central-housing interface fastener-receiver radial
+  thickness.
+- Added thinning of central-housing adapter lips based on DFM error setting.
+- Added precise control over segment 1 for each node on the central housing
+  interface’s adapter.
+- Added a tutorial for getting started designing from scratch.
+- Bundled designs:
+    - Added a configuration fragment for removing the rear housing of the DMOTE.
+
+### Migration guide
+Here is an example of adaptation from the old wall-building syntax to the new:
+
+```diff
+-      parallel: 4
+-      perpendicular: -16
++      segments:
++        "2": [0, 4, -16]
+```
+
+That is an excerpt from `config/macropad/base.yaml`, preserving the shape of
+the wall.
+
+## [Version 0.6.0] - 2020-09-09
+### Changed
 - Moved and replaced some parameters:
     - The `case` section of parameters was **renamed** to `main-body` to
       avoid ambiguity with respect to other bodies, a new concept.
@@ -500,7 +570,8 @@ configuration files. Salient points:
 - Removed a dependency on `unicode-math`. The requisite version of the library
   had not been deployed to Clojars and its use was cosmetic.
 
-[Unreleased]: https://github.com/veikman/dactyl-keyboard/compare/dmote-v0.5.1...HEAD
+[Unreleased]: https://github.com/veikman/dactyl-keyboard/compare/dmote-v0.6.0...HEAD
+[Version 0.6.0]: https://github.com/veikman/dactyl-keyboard/compare/dmote-v0.5.1...dmote-v0.6.0
 [Version 0.5.1]: https://github.com/veikman/dactyl-keyboard/compare/dmote-v0.5.0...dmote-v0.5.1
 [Version 0.5.0]: https://github.com/veikman/dactyl-keyboard/compare/dmote-v0.4.0...dmote-v0.5.0
 [Version 0.4.0]: https://github.com/veikman/dactyl-keyboard/compare/dmote-v0.3.0...dmote-v0.4.0
